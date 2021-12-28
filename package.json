@@ -1,0 +1,26 @@
+{
+  "name": "pak-dev",
+  "version": "1.0.0",
+  "description": "All-in PAKING Listing Campaign",
+  "main": "server.js",
+  "scripts": {
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "test": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "nodemon server.js"
+  },
+  "author": "Jaybee Pido",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.2",
+    "sequelize": "^5.22.4"
+  },
+  "devDependencies": {
+    "concurrently": "^6.4.0"
+  }
+}
