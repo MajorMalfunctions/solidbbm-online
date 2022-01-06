@@ -86,4 +86,21 @@ exports.getDistanceFromLatLonInKm = (latitude1,longitude1,latitude2,longitude2,u
 
   }
 
+  exports.countAge = function(val) {
+    let age = Number(new Date().getFullYear() - new Date(val).getFullYear());
+    return age;
+};
+
+exports.toUpperCase = function(val) {
+    let newObj = {}
+    for (const [key, value] of Object.entries(val)) {
+        if(value && typeof value == 'string'){
+            newObj[key] = String(value).toUpperCase();
+        } else {
+            newObj[key] = value;
+        }
+      }
+   return newObj
+};
+
  

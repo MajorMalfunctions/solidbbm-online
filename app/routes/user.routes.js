@@ -10,28 +10,27 @@ module.exports = function(app) {
     next();
   });
 
-  app.get("/api/barangays/:citymunCode", controller.findBrgyByCitymunCode);
+
+  //Post
+  app.post("/api/support/details", controller.createSupporterDetails);
+  app.post("/api/update/address/:id", controller.updateAddress);
 
 
-  app.get("/api/test/all", controller.allAccess);
 
-  app.get(
-    "/api/test/user",
-    [authJwt.verifyToken],
-    controller.userBoard
-  );
 
-  app.get(
-    "/api/test/mod",
-    [authJwt.verifyToken, authJwt.isModerator],
-    controller.moderatorBoard
-  );
+  //Get
+  app.get("/api/support/pinLocation/:lat/:lng/:id", controller.pinSupporterLocation);
 
   app.get(
-    "/api/test/admin",
-    [authJwt.verifyToken, authJwt.isAdmin],
-    controller.adminBoard
+    "/api/location/search/:lat/:lng",
+    controller.searchCoordinates
   );
+  app.get("/api/psgc/:citymunCode", controller.findBrgyByCitymunCode);
+  app.get("/api/psgc/:provCode", controller.findCitymunByProvCode);
+  app.get("/api/psgc/:regCode", controller.findProvByRegCode);
+  app.get("/api/psgc/regions", controller.findRegions);
+
+
 };
 
 

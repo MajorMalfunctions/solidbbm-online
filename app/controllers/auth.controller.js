@@ -8,6 +8,8 @@ const Op = db.Sequelize.Op;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
+const { validateLoginData } = require('../utils/validators')
+
 exports.signup = (req, res) => {
   // Save User to Database
   User.create({
@@ -41,6 +43,13 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
+  console.log(req.body)
+
+  const { valid, errors } = validateLoginData(req.body);
+  console.log(errors)
+  if (!valid) return res.status(400).json(errors);
+
+
   User.findOne({
     where: {
       username: req.body.username
@@ -81,6 +90,6 @@ exports.signin = (req, res) => {
       });
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
+    return  res.status(500).send({ message: err.message });
     });
 };

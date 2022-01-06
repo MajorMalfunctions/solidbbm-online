@@ -3,6 +3,7 @@ const dbConfig = require("../config/db.config.js");
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
+  port: dbConfig.Port,
   dialect: dbConfig.dialect,
   operatorsAliases: false,
   pool: {
@@ -33,7 +34,7 @@ db.barangays = require("./barangayModels/barangay.model.js")(sequelize, Sequeliz
 db.user = require("./user.model.js")(sequelize, Sequelize);
 db.role = require("./role.model.js")(sequelize, Sequelize);
 db.location = require("./location.model.js")(sequelize, Sequelize);
-db.resident = require("./resident.model.js")(sequelize, Sequelize);
+db.supporter = require("./supporter.model.js")(sequelize, Sequelize);
 
 
 
@@ -61,13 +62,8 @@ db.resident = require("./resident.model.js")(sequelize, Sequelize);
 
 
 
-//CityMun to Barangays
-// db.cityMuns.hasMany(db.barangays, { as: "barangays" });
-// db.barangays.belongsTo(db.cityMuns, {
-//   foreignKey: "citymunCode",
-//   targetkey: 'citymunCode',
-//   as: "cityMun",
-// });
+// CityMun to Barangays
+db.supporter.belongsTo(db.location);
 
 
 db.role.belongsToMany(db.user, {
@@ -75,6 +71,7 @@ db.role.belongsToMany(db.user, {
   foreignKey: "roleId",
   otherKey: "userId"
 });
+
 db.user.belongsToMany(db.role, {
   through: "user_roles",
   foreignKey: "userId",
