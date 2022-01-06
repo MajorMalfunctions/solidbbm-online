@@ -11,6 +11,10 @@
 # production
 /build
 
+/client
+/psgc
+
+
 # misc
 .DS_Store
 .env.local
