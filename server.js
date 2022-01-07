@@ -79,11 +79,11 @@ function initial() {
 
 
 // simple route
-app.get("/", (req, res) => {
-console.log(__dirname)
+// app.get("/", (req, res) => {
+// console.log(__dirname)
 
-  res.json({ message: "Welcome To All-in Paking Application." });
-});
+//   res.json({ message: "Welcome To All-in Paking Application." });
+// });
 
 
 // routes
@@ -97,7 +97,7 @@ require('./app/routes/user.routes')(app);
 
 if(process.env.NODE_ENV === 'production' || true){
   app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname+'./client/build/index.html'));
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 }
 
