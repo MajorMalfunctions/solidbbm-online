@@ -129,7 +129,7 @@ console.log(port)
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
-
+  console.log(port)
   if (isNaN(port)) {
     // named pipe
     return val;
