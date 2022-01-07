@@ -134,7 +134,7 @@ exports.updateAddress = (req, res) => {
 
 exports.findBrgyByCitymunCode = (req, res) => {
   let { citymunCode } = req.params
-
+  console.log(citymunCode)
   Barangay.findAll({where: { citymunCode }})
     .then((barangays) => {
       res.status(200).json(barangays);

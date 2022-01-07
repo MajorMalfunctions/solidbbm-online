@@ -2,8 +2,8 @@
   "name": "pak-dev",
   "version": "1.0.0",
   "description": "All-in PAKING Listing Campaign",
-  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "server": "nodemon server.js",
     "client": "npm start --prefix client",
     "test": "concurrently \"npm run server\" \"npm run client\"",

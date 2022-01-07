@@ -1,3 +1,5 @@
+require('dotenv').config();
+const path = require('path');
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -7,7 +9,7 @@ const app = express();
 
 
 var corsOptions = {
-  origin: "http://localhost:42000"
+  origin: "*"
 };
 
 app.use(cors(corsOptions));
@@ -16,14 +18,16 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
-
+app.use(express.urlencoded({ extended: false }));
 
 // database
 const db = require("./app/models");
 const Op = db.Sequelize.Op;
 const Role = db.role;
 const User = db.user;
+
+
+app.use(express.static(path.join(__dirname+'/client/', 'build')));
 
 
 db.sequelize.sync();
@@ -75,9 +79,11 @@ function initial() {
 
 
 // simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome To All-in Paking Application." });
-});
+// app.get("/", (req, res) => {
+// console.log(__dirname)
+
+//   res.json({ message: "Welcome To All-in Paking Application." });
+// });
 
 
 // routes
@@ -87,9 +93,52 @@ require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
 
 
-// set port, listen for requests
-const PORT = process.env.PORT || 23000;
-console.log(PORT)
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+
+
+if(process.env.NODE_ENV === 'production' || true){
+  app.get('/*', (req, res) => {
+    console.log(__dirname)
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
+}
+
+
+var http = require('http');
+
+
+
+var port = normalizePort(process.env.PORT || '23000');
+app.set('port', port);
+
+
+
+var server = http.createServer(app);
+
+server.listen(port);
+
+// set port, listen for requests
+// const PORT = process.env.PORT || 23000;
+// console.log(PORT)
+console.log(port)
+
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}.`);
+// });
+
+
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
