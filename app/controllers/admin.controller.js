@@ -32,6 +32,24 @@ let obj = {};
 
 };
 
+exports.getAllSupportersCount =  (req, res) => {
+  let obj = {};
+    supporter.findAll({ include: [{
+      model: location,
+      required: false
+  }] })
+    .then((doc) => {
+      return res.status(200).json(doc.length);
+    })
+    .catch((err) => {
+      console.log(">>Error While Fetching Supporters! ", err);
+     return res.status(400).send({ error: err, message: 'Error While Fetching Supporters!'});
+    });
+  
+  };
+
+
+
 exports.userBoard = (req, res) => {
   res.status(200).send("User Content.");
 };

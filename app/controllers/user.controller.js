@@ -4,7 +4,7 @@ const axios = require('axios');
 
 
 const Barangay = db.barangays;
-const Citymun = db.cityMun;
+const Citymun = db.cityMuns;
 const Provinces = db.provinces;
 const Regions = db.Regions;
 const Supporters = db.supporter;
@@ -22,7 +22,7 @@ exports.createSupporterDetails = async (req, res) => {
   delete req.body.id 
   console.log(req.body)
   const { valid, errors } = validateSupporterDetails(req.body);
-  if (!valid) return res.status(400).json(errors);
+  if (!valid) return res.status(400).json({ errors, message: { text: 'Something went wrong!', type: 'error'}});
   
 
   let { firstName, lastName, birthDate, contact, psgcCode, middleName } = toUpperCase(req.body);
@@ -49,15 +49,15 @@ exports.createSupporterDetails = async (req, res) => {
       })
       .catch((err) => {
         console.log(">>Error While Saving Supporter! ", err);
-        return res.status(400).send({ error: err, message: 'Error While Saving Supporter!'});
+        return res.status(400).json({ errors: err, message: { text: 'Something went wrong!', type: 'error'}});
       });
     } else {
-       res.status(400).send('Already exist on Master List');
+      return res.status(400).json({ message: { text: 'Already exist on Master List!', type: 'warning'}});
     }
   })
   .catch((err) => {
-    console.log(">>Error While Saving Supporter! ", err);
-    return res.status(400).send({ error: err, message: 'Error While Saving Supporter!'});
+    console.log(">>Something went wrong! ", err);
+    return res.status(400).json({ errors: err, message: { text: 'Something went wrong!', type: 'error'}});
   });
 };
 
@@ -159,6 +159,7 @@ exports.findCitymunByProvCode = (req, res) => {
 };
 
 exports.findProvByRegCode = (req, res) => {
+  console.log(req.params)
   let { regCode } = req.params
 
   Provinces.findAll({where: { regCode }})

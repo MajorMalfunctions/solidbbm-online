@@ -66,6 +66,8 @@ const isBD = (data) => {
     if (isEmpty(data.contact)) errors.contact = 'Mobile must not be empty';
     if (isMobile(data.contact)) errors.contact = 'Invalid! must be (ex: 9xx xxx xxxx)';
     if (isEmpty(data.psgcCode)) errors.psgcCode = 'Barangay must not be empty';
+    if (isEmpty(data.citymunCode)) errors.citymunCode = 'City/Municipality must not be empty';
+    if (isEmpty(data.provCode)) errors.provCode = 'Province must not be empty';
     if (isEmpty(data.birthDate)) errors.birthDate = 'Birth Year must not be empty';
     if (isBD(data.birthDate)) errors.birthDate = 'Birth Year not legal';
 

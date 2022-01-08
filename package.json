@@ -4,7 +4,7 @@
   "description": "All-in PAKING Listing Campaign",
   "scripts": {
     "start": "node server.js",
-    "server": "nodemon server.js",
+    "server": "node  server.js",
     "client": "npm start --prefix client",
     "test": "concurrently \"npm run server\" \"npm run client\"",
     "dev": "nodemon server.js"

@@ -64,7 +64,7 @@ db.supporter = require("./supporter.model.js")(sequelize, Sequelize);
 
 // CityMun to Barangays
 db.supporter.belongsTo(db.location);
-
+db.user.belongsTo(db.supporter);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

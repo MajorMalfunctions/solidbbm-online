@@ -25,9 +25,9 @@ module.exports = function(app) {
     "/api/location/search/:lat/:lng",
     controller.searchCoordinates
   );
-  app.get("/api/psgc/:citymunCode", controller.findBrgyByCitymunCode);
-  app.get("/api/psgc/:provCode", controller.findCitymunByProvCode);
-  app.get("/api/psgc/:regCode", controller.findProvByRegCode);
+  app.get("/api/psgc/barangay/:citymunCode", controller.findBrgyByCitymunCode);
+  app.get("/api/psgc/citymun/:provCode", controller.findCitymunByProvCode);
+  app.get("/api/psgc/province/:regCode", controller.findProvByRegCode);
   app.get("/api/psgc/regions", controller.findRegions);
 
 

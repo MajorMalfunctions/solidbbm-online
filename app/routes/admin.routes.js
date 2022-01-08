@@ -11,6 +11,7 @@ module.exports = function(app) {
   });
 
   app.get("/api/get/supporters", controller.getAllSupporters);
+  app.get("/api/get/supporters-count", controller.getAllSupportersCount);
 
   // app.get(
   //   "/api/test/user",

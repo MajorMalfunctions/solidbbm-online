@@ -24,6 +24,10 @@ module.exports = (sequelize, Sequelize) => {
       isVerified: {
           type: Sequelize.BOOLEAN,
           defaultValue: false
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       }
     });
   
