@@ -1,0 +1,2 @@
+1 Add DB on prod env
+2 initial loading 

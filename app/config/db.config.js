@@ -3,7 +3,7 @@ module.exports = {
     HOST: process.env.HOST,
     USER: process.env.DBUSER,
     PASSWORD: process.env.PASSWORD,
-    DB: "allindb",
+    DB: process.env.DB,
     Port: 3306,
     dialect: "mysql",
     pool: {

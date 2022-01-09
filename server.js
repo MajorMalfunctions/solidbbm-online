@@ -30,11 +30,16 @@ const User = db.user;
 app.use(express.static(path.join(__dirname+'/client/', 'build')));
 
 
-db.sequelize.sync();
+db.sequelize.sync().then(() => {
+      // initial()
+}).catch(err => {
+  console.log(err)
+});
+
+
 // db.sequelize.sync({force: true}).then(() => { 
 //   initial();
 // });
-
 
 function initial() {
   Role.create({
@@ -77,23 +82,18 @@ function initial() {
   });
 }
 
-
 // simple route
 // app.get("/", (req, res) => {
-// console.log(__dirname)
+     // console.log(__dirname)
 
 //   res.json({ message: "Welcome To All-in Paking Application." });
 // });
-
 
 // routes
 // require('./app/routes/auth.routes')(app);
 require('./app/routes/admin.routes')(app);
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
-
-
-
 
 if(process.env.NODE_ENV === 'production' || true){
   app.get('/*', (req, res) => {
@@ -102,15 +102,10 @@ if(process.env.NODE_ENV === 'production' || true){
 });
 }
 
-
 var http = require('http');
-
-
 
 var port = normalizePort(process.env.PORT || '23000');
 app.set('port', port);
-
-
 
 var server = http.createServer(app);
 
@@ -119,13 +114,10 @@ server.listen(port);
 // set port, listen for requests
 // const PORT = process.env.PORT || 23000;
 // console.log(PORT)
-console.log(port)
 
 // app.listen(PORT, () => {
 //   console.log(`Server is running on port ${PORT}.`);
 // });
-
-
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
