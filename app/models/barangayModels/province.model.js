@@ -7,11 +7,11 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     provCode: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER.UNSIGNED  
     },
-    regCode: {
-      type: Sequelize.INTEGER
-    }
+    // regCode: {
+    //   type: Sequelize.INTEGER.UNSIGNED  
+    // }
   });
 
   return Province;

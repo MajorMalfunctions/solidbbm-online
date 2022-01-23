@@ -5,11 +5,11 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     brgyCode: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER.UNSIGNED
     },
-    citymunCode: {
-      type: Sequelize.INTEGER
-    },
+    // citymunCode: {
+    //   type: Sequelize.INTEGER.UNSIGNED
+    // },
     provCode: {
       type: Sequelize.INTEGER
     },

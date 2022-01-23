@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
           type: Sequelize.STRING
       },
       psgcCode: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       isVerified: {
           type: Sequelize.BOOLEAN,

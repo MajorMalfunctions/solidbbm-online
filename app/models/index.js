@@ -35,6 +35,8 @@ db.user = require("./user.model.js")(sequelize, Sequelize);
 db.role = require("./role.model.js")(sequelize, Sequelize);
 db.location = require("./location.model.js")(sequelize, Sequelize);
 db.supporter = require("./supporter.model.js")(sequelize, Sequelize);
+db.post = require("./post.model.js")(sequelize, Sequelize);
+db.media = require("./media.model.js")(sequelize, Sequelize);
 
 
 
@@ -57,14 +59,18 @@ db.supporter = require("./supporter.model.js")(sequelize, Sequelize);
 // db.cityMuns.belongsTo(db.provinces, {
 //   foreignKey: "provCode",
 //   targetkey: 'provCode',
-//   as: "province",
+//   as: "province", 
 // });
 
 
 
 // CityMun to Barangays
-db.supporter.belongsTo(db.location);
-db.user.belongsTo(db.supporter);
+db.supporter.belongsTo(db.location, {
+  constraints: false
+});
+db.user.belongsTo(db.supporter, {
+  constraints: false
+});
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -78,7 +84,60 @@ db.user.belongsToMany(db.role, {
   otherKey: "roleId"
 });
 
-db.ROLES = ["user", "admin", "moderator"];
 
+db.user.belongsTo(db.media, {as: 'UserProfile', constraints: false})
+// db.media.belongsTo(db.user, {as: 'UserProfile', constraints: false})
+
+
+db.user.hasMany(db.post)
+db.post.belongsTo(db.user)
+
+
+
+db.post.hasMany(db.media, {as: 'PostMedia', constraints: false})
+db.media.belongsTo(db.post, {
+  constraints: false
+});
+
+
+
+//psgc relations;
+db.regions.hasMany(db.provinces, { as: 'RegionProvince', foreignKey: 'regCode', sourceKey: 'regCode',
+constraints: false
+});
+db.provinces.belongsTo(db.regions, { as: 'RegionProvince', foreignKey: 'regCode', targetKey: 'regCode',
+ constraints: false
+});
+
+db.provinces.hasMany(db.cityMuns, { as: 'ProvinceCitymun', foreignKey: 'provCode', sourceKey: 'provCode', constraints: false});
+db.cityMuns.belongsTo(db.provinces, { as: 'ProvinceCitymun', foreignKey: 'provCode', targetKey: 'provCode', constraints: false});
+db.cityMuns.hasMany(db.barangays, { as: 'CitymunBarangay', foreignKey: 'citymunCode', sourceKey: 'citymunCode', constraints: false});
+db.barangays.belongsTo(db.cityMuns, { as: 'CitymunBarangay', foreignKey: 'citymunCode', targetKey: 'citymunCode', constraints: false});
+
+//psgc relations;
+db.regions.hasMany(db.user, { as: 'RegionLeader', foreignKey: 'areaCode', sourceKey: 'regCode', constraints: false});
+db.user.belongsTo(db.regions, { as: 'RegionLeader', foreignKey: 'areaCode', targetKey: 'regCode', constraints: false});
+db.provinces.hasMany(db.user, { as: 'ProvinceLeader', foreignKey: 'areaCode', sourceKey: 'provCode', constraints: false});
+db.user.belongsTo(db.provinces, { as: 'ProvinceLeader', foreignKey: 'areaCode', targetKey: 'provCode', constraints: false});
+db.cityMuns.hasMany(db.user, { as: 'CitymunLeader', foreignKey: 'areaCode', sourceKey: 'citymunCode', constraints: false});
+db.user.belongsTo(db.cityMuns, { as: 'CitymunLeader', foreignKey: 'areaCode', targetKey: 'citymunCode', constraints: false});
+db.barangays.hasMany(db.user, { as: 'BrangayLeader', foreignKey: 'areaCode', sourceKey: 'brgyCode', constraints: false});
+db.user.belongsTo(db.barangays, { as: 'BrangayLeader', foreignKey: 'areaCode', targetKey: 'brgyCode', constraints: false});
+
+db.barangays.hasMany(db.supporter, { as: 'BarangaySupport', foreignKey: 'psgcCode', sourceKey: 'brgyCode'
+, constraints: false
+});
+db.supporter.belongsTo(db.barangays, { as: 'BarangaySupport', foreignKey: 'psgcCode', targetKey: 'brgyCode',
+ constraints: false
+});
+
+// db.provinces.hasMany(db.cityMuns, { as: 'province_citymun', foreignKey: 'provCode', targetKey: 'provCode'});
+// db.cityMuns.belongsTo(db.provinces, { as: 'province_citymun', foreignKey: 'provCode', targetKey: 'provCode'});
+// db.cityMuns.hasMany(db.barangays, { as: 'citymun_barangay', foreignKey: 'citymunCode', targetKey: 'citymunCode'});
+// db.barangays.belongsTo(db.cityMuns, { as: 'citymun_barangay', foreignKey: 'citymunCode', targetKey: 'citymunCode'});
+
+
+
+db.ROLES = ["super", "admin", "user", "region", "province", "citymun", "barangay" ];  
 
 module.exports = db;

@@ -4,10 +4,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER
       },
       regDesc: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       regCode: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED 
       }
     });
   

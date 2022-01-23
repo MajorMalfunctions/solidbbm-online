@@ -7,11 +7,11 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     citymunCode: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER.UNSIGNED
     },
-    provCode: {
-      type: Sequelize.INTEGER
-    },
+    // provCode: {
+    //   type: Sequelize.INTEGER.UNSIGNED
+    // },
     regCode: {
       type: Sequelize.INTEGER
     }

@@ -5,6 +5,12 @@ const isEmail = (email) => {
     else return false;
   };
 
+  const isPassword8 = (string) => {
+
+    if (String(string).length < 8) return true;
+    else return false;
+  };
+
 
 const isBD = (data) => {
   console.log(Number(new Date().getFullYear() - new Date(data).getFullYear()))
@@ -57,6 +63,23 @@ const isBD = (data) => {
     };
   };
 
+  exports.validateSignupData = (data) => {
+    let errors = {};
+  
+    if (isEmpty(data.username)) errors.username = 'Username must not be empty';
+    if (isEmpty(data.password)) errors.password = 'Password must be empty';
+    if (isPassword8(data.password)) errors.password = 'Password must be 8 characters';
+    if (isEmpty(data.supporterId)) errors.supporterId = 'Re-input basic details';
+    if (isEmpty(data.roles)) errors.roles= 'Role must not be empty';
+    if (isEmpty(data.areaCode)) errors.areaCode = 'Designated area must not be empty';
+    
+
+    return {
+      errors,
+      valid: Object.keys(errors).length === 0 ? true : false
+    };
+  };
+
 
   exports.validateSupporterDetails = (data) => {
     let errors = {};
@@ -66,8 +89,8 @@ const isBD = (data) => {
     if (isEmpty(data.contact)) errors.contact = 'Mobile must not be empty';
     if (isMobile(data.contact)) errors.contact = 'Invalid! must be (ex: 9xx xxx xxxx)';
     if (isEmpty(data.psgcCode)) errors.psgcCode = 'Barangay must not be empty';
-    if (isEmpty(data.citymunCode)) errors.citymunCode = 'City/Municipality must not be empty';
-    if (isEmpty(data.provCode)) errors.provCode = 'Province must not be empty';
+    // if (isEmpty(data.citymunCode)) errors.citymunCode = 'City/Municipality must not be empty';
+    // if (isEmpty(data.provCode)) errors.provCode = 'Province must not be empty';
     if (isEmpty(data.birthDate)) errors.birthDate = 'Birth Year must not be empty';
     if (isBD(data.birthDate)) errors.birthDate = 'Birth Year not legal';
 
@@ -100,7 +123,6 @@ const isBD = (data) => {
     if (isEmptyArray(data.operatingHours)) errors.operatingHours = 'Set Operating hours';
     if (isEmptyArray(data.services)) errors.services = 'Services must not be empty';
     if (isEmptyArray(data.products)) errors.products = 'Products must not be empty';
-
     
     return {
       errors,

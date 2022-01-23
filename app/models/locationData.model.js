@@ -24,8 +24,20 @@ module.exports = (sequelize, Sequelize) => {
       lng: {
         type: Sequelize.DECIMAL(11, 8)
       },
-      zoom: {
-        type: Sequelize.INTEGER
+      north: {
+
+      },
+      noth: {
+        type: Sequelize.DECIMAL(10, 8)
+      },
+      easth: {
+        type: Sequelize.DECIMAL(11, 8)
+      },
+      south: {
+        type: Sequelize.DECIMAL(10, 8)
+      },
+      west: {
+        type: Sequelize.DECIMAL(11, 8)
       }
     });
     return Location;

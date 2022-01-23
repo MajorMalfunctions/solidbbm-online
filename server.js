@@ -25,50 +25,67 @@ const db = require("./app/models");
 const Op = db.Sequelize.Op;
 const Role = db.role;
 const User = db.user;
+const Region = db.regions;
 
 
 app.use(express.static(path.join(__dirname+'/client/', 'build')));
 
 
-db.sequelize.sync().then(() => {
-      // initial()
-}).catch(err => {
-  console.log(err)
+// db.sequelize.sync().then(() => {
+//       // initial()
+// }).catch(err => {
+//   console.log(err)
+// });
+db.sequelize.sync(
+  // {force: true}
+  ).then(() => { 
+  // initial();
 });
 
-
-// db.sequelize.sync({force: true}).then(() => { 
-//   initial();
-// });
-
-function initial() {
+async function initial() {
   Role.create({
     id: 1,
-    name: "user"
+    name: "super"
   });
- 
   Role.create({
     id: 2,
-    name: "moderator"
-  });
- 
-  Role.create({
-    id: 3,
     name: "admin"
   });
+  Role.create({
+    id: 3,
+    name: "user"
+  });
+  Role.create({
+    id: 4,
+    name: "region"
+  });
+  Role.create({
+    id: 5,
+    name: "province"
+  });
+  Role.create({
+    id: 6,
+    name: "citymun"
+  });
+  Role.create({
+    id: 7,
+    name: "barangay"
+  });
+
 
   User.create({
-    "username": "Jaybee420",
+    "username": "jaybee420",
     "firstName": "jaybee",
     "lastName": "Pido",
     "middleName": "Bermoy",
     "mobile": "12312312",
-    "password": bcrypt.hashSync("123123", 8)
+    "password": bcrypt.hashSync("123123", 8),
+    "isVerified": true
   }).then(user => {
       Role.findAll({
         where: {
           name: {
-            [Op.or]: ["user"]
+            [Op.or]: ["super"]
           }
         }
       }).then(roles => {
@@ -91,6 +108,7 @@ function initial() {
 
 // routes
 // require('./app/routes/auth.routes')(app);
+require('./app/routes/sms.routes')(app);
 require('./app/routes/admin.routes')(app);
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);

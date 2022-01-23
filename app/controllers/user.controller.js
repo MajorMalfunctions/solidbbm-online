@@ -6,7 +6,7 @@ const axios = require('axios');
 const Barangay = db.barangays;
 const Citymun = db.cityMuns;
 const Provinces = db.provinces;
-const Regions = db.Regions;
+const Regions = db.regions;
 const Supporters = db.supporter;
 const location = db.location;
 const Op = db.Sequelize.Op;
@@ -20,14 +20,16 @@ const { countAge, toUpperCase } = require('../utils/helpers');
 
 exports.createSupporterDetails = async (req, res) => {
   delete req.body.id 
-  console.log(req.body)
   const { valid, errors } = validateSupporterDetails(req.body);
   if (!valid) return res.status(400).json({ errors, message: { text: 'Something went wrong!', type: 'error'}});
   
 
   let { firstName, lastName, birthDate, contact, psgcCode, middleName } = toUpperCase(req.body);
   let age = countAge(birthDate);
-  console.log(firstName)
+  let bar = await Barangay.findOne({where: {
+    brgyCode: psgcCode
+  }})
+
  await Supporters.findOne({
     where: {
       [Op.and]: [
@@ -38,31 +40,41 @@ exports.createSupporterDetails = async (req, res) => {
     }
   })
  .then((doc) => {
-    console.log(doc)
-    console.log(!doc)
     if(!doc){
      return Supporters.create({
-        firstName, lastName, birthDate, contact, psgcCode, middleName, age
+        firstName, lastName, birthDate, contact, middleName, age
       })
       .then(sup => {
-        return res.status(200).json(sup);
+        console.log(bar)
+        bar.addBarangaySupport(sup);
+        // sup.setBarangaySupport([bar]);
+        //  bar.addBarangaySupports(sup);
+          return res.status(200).json(sup);
       })
       .catch((err) => {
         console.log(">>Error While Saving Supporter! ", err);
-        return res.status(400).json({ errors: err, message: { text: 'Something went wrong!', type: 'error'}});
+        return res.status(400).json({ errors: err, message: { text: 'Something went wrong!', type: 'error'}, steps: 0});
       });
     } else {
-      return res.status(400).json({ message: { text: 'Already exist on Master List!', type: 'warning'}});
+      if(doc.locationId){
+        return res.status(400).json({ message: { text: 'Already exist on Master List!',type: 'warning'},  steps: 0});
+      }else {
+        return res.status(400).json({ message: { text: 'Pin your location!', steps: 1, type: 'warning'},  steps: 1});
+      }
     }
   })
   .catch((err) => {
     console.log(">>Something went wrong! ", err);
-    return res.status(400).json({ errors: err, message: { text: 'Something went wrong!', type: 'error'}});
+    return res.status(400).json({ errors: err, message: { text: 'Something went wrong!', type: 'error'}, steps: 0});
   });
 };
 
+
 exports.pinSupporterLocation = async (req, res) => {
-  const { lat, lng, id } = req.params;
+  const { id } = req.params;
+  const { lat, lng, address, zoom } = req.body;
+
+
   const { valid, errors } = validateMapDetails({lat,lng,id});
   if (!valid) return res.status(400).json(errors);
 
@@ -76,7 +88,7 @@ exports.pinSupporterLocation = async (req, res) => {
       if(results.length !== 0){
         console.log(formatted_address(results[0]))            
         
-          let loc = await location.create(formatted_address(results[0]))
+          let loc = await location.create({...formatted_address(results[0]), address, zoom  })
           // console.log(loc)
           sup.setLocation(loc);
           res.status(200).json(loc);
@@ -173,9 +185,8 @@ exports.findProvByRegCode = (req, res) => {
 };
 
 exports.findRegions = (req, res) => {
-  let { regCode } = req.params
 
-  Regions.findAll({where: { regCode }})
+  Regions.findAll()
     .then((barangays) => {
       res.status(200).json(barangays);
     })

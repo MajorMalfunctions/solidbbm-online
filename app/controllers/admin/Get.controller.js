@@ -1,13 +1,13 @@
-const config = require('../config/auth.config')
-const db = require("../models");
+const config = require('../../config/auth.config')
+const db = require("../../models");
 const axios = require('axios');
-const { formatted_address } = require('../utils/formatter');
+const { formatted_address } = require('../../utils/formatter');
 const Barangay = db.barangays;
-const Citymun = db.cityMun;
-const provinces = db.provinces;
-const regions = db.regions;
-const supporter = db.supporter;
-const location = db.location;
+const Citymun = db.cityMuns;
+const Provinces = db.provinces;
+const Regions = db.regions;
+const Supporter = db.supporter;
+const Location = db.location;
 const Users = db.user;
 
 
@@ -51,20 +51,57 @@ exports.getAllSupportersCount =  (req, res) => {
 
 
   exports.getOrganization = (req, res) => {
+    let { regCode } = req.params;
 
-    Users.findAll()
+
+    Regions.findAll({where: {
+        regCode
+    }, include: 
+      [
+      { model: Provinces, as: 'RegionProvince', 
+      include: [
+        { model: Citymun, as: 'ProvinceCitymun', 
+          include: [
+            {model: Barangay, as: 'CitymunBarangay', 
+            include: [
+              {model: Supporter, as: 'BarangaySupport' },
+              { model: Users, as: 'BrangayLeader' }
+            ]
+          },
+            { model: Users, as: 'CitymunLeader' },
+          ],
+          required: false
+          },
+          { model: Users, as: 'ProvinceLeader', required: false },
+          ],
+      required: true
+        },
+
+        //  include: [{
+        //   model: Barangay, as: 'CitymunBarangay', 
+        //   include: [{
+        //      model: Users, as: 'BrangayLeader'
+        //   }]
+          // }
+          // { model: Users, as: 'CitymunLeader'}
+     
+     
+        
+      { model: Users, as: 'RegionLeader', required: false }
+    ] 
+    // {all: true, include: { all: true, include: { all: true } }}
+  })
     .then(rs => {
-      res.status(200).json(rs);
+      console.log(rs)
+     return res.status(200).json(rs);
     })
     .catch(err => {
-      res.status(400).json(err)
+      console.log(err)
+    return res.status(400).json(err)
     })
   };
 
 
-exports.createOption = (req, res) => {
-  res.status(200).send("User Content.");
-};
 
 exports.getRegionProvinces = async (req, res) => {
 
@@ -85,6 +122,8 @@ exports.getRegionProvinces = async (req, res) => {
   }
 
 };
+
+
 
 exports.moderatorBoard = (req, res) => {
   res.status(200).send("Moderator Content.");
