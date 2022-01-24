@@ -13,8 +13,11 @@ exports.verifySms = (req, res) => {
     .then(a => {
         if(a){
           Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
-        } 
-        res.status(200).json({message: 'Subscriber Verified!'})        
+            res.status(200).json({message: 'Subscriber Verified!'})        
+        } else {
+            Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
+            res.status(200).json({message: 'Subscriber Verified!'})    
+        }
     })
     .catch(err => {
         console.log(err)
