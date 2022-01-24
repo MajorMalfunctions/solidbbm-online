@@ -1,3 +1,6 @@
+const config = require('../config/auth.config')
+
+
 exports.myMap = (data) => {
     let { latitude, longitude, address_components, geometry, placeId, types, formatted_address } = data
     return {
@@ -11,5 +14,17 @@ exports.formatted_address = (data) => {
         address: formatted_address,
         lat: geometry?.location?.lat,
         lng: geometry?.location?.lng
+    }
+}
+
+exports.formatted_sms = (address, supporter) => {
+    let text = `Salamat ${supporter.firstName} ${supporter.lastName} an imo supporta. `
+
+    return { 
+            outboundSMSMessageRequest: {
+        senderAddress: config.smsCode,
+        outboundSMSTextMessage: {message: "Hello World"},
+        address: address
+      }
     }
 }
