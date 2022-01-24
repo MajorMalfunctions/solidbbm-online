@@ -9,6 +9,7 @@ const Provinces = db.provinces;
 const Regions = db.regions;
 const Supporters = db.supporter;
 const location = db.location;
+const Mobiles = db.mobile;
 const Op = db.Sequelize.Op;
 
 
@@ -24,11 +25,31 @@ exports.createSupporterDetails = async (req, res) => {
   if (!valid) return res.status(400).json({ errors, message: { text: 'Something went wrong!', type: 'error'}});
   
 
-  let { firstName, lastName, birthDate, contact, psgcCode, middleName } = toUpperCase(req.body);
+  let { firstName, lastName, birthDate, contact, regCode, brgyCode, citymunCode, provCode, middleName  } = toUpperCase(req.body);
   let age = countAge(birthDate);
   let bar = await Barangay.findOne({where: {
-    brgyCode: psgcCode
+    brgyCode: brgyCode
+  }});
+
+  let city = await Citymun.findOne({where: {
+    citymunCode: citymunCode
+  }});
+
+  let prov = await Provinces.findOne({where: {
+    provCode: provCode
+  }});
+
+  let reg = await Regions.findOne({where: {
+    regCode: regCode
+  }});
+
+
+  let mob = await Mobiles.findOne({where: {
+    mobile: contact
   }})
+
+  let mobnum = mob ? mob : await Mobiles.create({mobile: contact});
+
 
  await Supporters.findOne({
     where: {
@@ -45,9 +66,13 @@ exports.createSupporterDetails = async (req, res) => {
         firstName, lastName, birthDate, contact, middleName, age
       })
       .then(sup => {
-        console.log(bar)
+        console.log(mobnum)
+        sup.addMobile(mobnum)
         bar.addBarangaySupport(sup);
-        // sup.setBarangaySupport([bar]);
+        city.addCitymunSupport(sup);
+        prov.addProvinceSupport(sup);
+        reg.addRegionSupport(sup);
+        //  sup.setBarangaySupport([bar]);
         //  bar.addBarangaySupports(sup);
           return res.status(200).json(sup);
       })

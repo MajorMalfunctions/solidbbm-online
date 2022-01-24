@@ -37,6 +37,7 @@ db.location = require("./location.model.js")(sequelize, Sequelize);
 db.supporter = require("./supporter.model.js")(sequelize, Sequelize);
 db.post = require("./post.model.js")(sequelize, Sequelize);
 db.media = require("./media.model.js")(sequelize, Sequelize);
+db.mobile = require("./mobile.model.js")(sequelize, Sequelize);
 
 
 
@@ -84,6 +85,17 @@ db.user.belongsToMany(db.role, {
   otherKey: "roleId"
 });
 
+db.supporter.belongsToMany(db.mobile, {
+  through: "supporter_mobiles",
+  foreignKey: "supporterId",
+  otherKey: "mobileId"
+});
+
+db.mobile.belongsToMany(db.supporter, {
+  through: "supporter_mobiles",
+  foreignKey: "mobileId",
+  otherKey: "supporterId"
+});
 
 db.user.belongsTo(db.media, {as: 'UserProfile', constraints: false})
 // db.media.belongsTo(db.user, {as: 'UserProfile', constraints: false})
@@ -124,10 +136,37 @@ db.user.belongsTo(db.cityMuns, { as: 'CitymunLeader', foreignKey: 'areaCode', ta
 db.barangays.hasMany(db.user, { as: 'BrangayLeader', foreignKey: 'areaCode', sourceKey: 'brgyCode', constraints: false});
 db.user.belongsTo(db.barangays, { as: 'BrangayLeader', foreignKey: 'areaCode', targetKey: 'brgyCode', constraints: false});
 
-db.barangays.hasMany(db.supporter, { as: 'BarangaySupport', foreignKey: 'psgcCode', sourceKey: 'brgyCode'
+
+
+
+
+//psgc supporter relations;
+db.barangays.hasMany(db.supporter, { as: 'BarangaySupport', foreignKey: 'brgyCode', sourceKey: 'brgyCode'
 , constraints: false
 });
-db.supporter.belongsTo(db.barangays, { as: 'BarangaySupport', foreignKey: 'psgcCode', targetKey: 'brgyCode',
+db.supporter.belongsTo(db.barangays, { as: 'BarangaySupport', foreignKey: 'brgyCode', targetKey: 'brgyCode',
+ constraints: false
+});
+
+db.cityMuns.hasMany(db.supporter, { as: 'CitymunSupport', foreignKey: 'citymunCode', sourceKey: 'citymunCode'
+, constraints: false
+});
+db.supporter.belongsTo(db.cityMuns, { as: 'CitymunSupport', foreignKey: 'citymunCode', targetKey: 'citymunCode',
+ constraints: false
+});
+
+db.provinces.hasMany(db.supporter, { as: 'ProvinceSupport', foreignKey: 'provCode', sourceKey: 'provCode'
+, constraints: false
+});
+db.supporter.belongsTo(db.provinces, { as: 'ProvinceSupport', foreignKey: 'provCode', targetKey: 'provCode',
+ constraints: false
+});
+
+
+db.regions.hasMany(db.supporter, { as: 'RegionSupport', foreignKey: 'regCode', sourceKey: 'regCode'
+, constraints: false
+});
+db.supporter.belongsTo(db.regions, { as: 'RegionSupport', foreignKey: 'regCode', targetKey: 'regCode',
  constraints: false
 });
 

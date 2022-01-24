@@ -1,7 +1,7 @@
 const config = require('../../config/auth.config')
 const db = require("../../models");
 const axios = require('axios');
-const { formatted_address } = require('../../utils/formatter');
+const { queryOpt } = require('../../utils/commonData');
 const Barangay = db.barangays;
 const Citymun = db.cityMuns;
 const Provinces = db.provinces;
@@ -120,7 +120,89 @@ exports.getRegionProvinces = async (req, res) => {
     console.log(err)
    res.status(400).json(err)
   }
+};
 
+exports.getRegionData = async (req, res) => {
+  let { id, code } = req.query;
+  console.log(id)
+  console.log(code)
+  // console.log(req.params)
+
+  let opt = queryOpt.filter(a => a.id === id);
+    console.log(opt)
+  // res.status(200).json(req.params)
+  try {
+     Regions.findAll({where: { regCode: code },include: opt})
+     .then(rs => {
+     return res.status(200).json(rs)
+     })
+     .catch(err => {
+        res.status(400).json(err)
+     })
+    
+
+  } catch(err) {
+    console.log(err)
+   res.status(400).json(err)
+  }
+};
+
+exports.getProvinceData = async (req, res) => {
+  console.log(req.params)
+  try {
+    let pr = await provinces.findAll({ include: ["region_provinces"] })
+     regions.findAll({include: ["region_provinces"]})
+     .then(rs => {
+     return res.status(200).json({pr, rs})
+     })
+     .catch(err => {
+        res.status(400).json(err)
+     })
+    
+
+  } catch(err) {
+    console.log(err)
+   res.status(400).json(err)
+  }
+};
+
+
+exports.getCitymunData = async (req, res) => {
+  console.log(req.params)
+  try {
+    let pr = await provinces.findAll({ include: ["region_provinces"] })
+     regions.findAll({include: ["region_provinces"]})
+     .then(rs => {
+     return res.status(200).json({pr, rs})
+     })
+     .catch(err => {
+        res.status(400).json(err)
+     })
+    
+
+  } catch(err) {
+    console.log(err)
+   res.status(400).json(err)
+  }
+};
+
+exports.getBarangayData = async (req, res) => {
+  console.log(req.params)
+  try {
+    let pr = await provinces.findAll({ include: ["region_provinces"] })
+     regions.findAll({include: ["region_provinces"]})
+     .then(rs => {
+     return res.status(200).json({pr, rs})
+     })
+     .catch(err => {
+        res.status(400).json(err)
+     })
+    
+
+  } catch(err) {
+    console.log(err)
+   res.status(400).json(err)
+  }
 };
 
 

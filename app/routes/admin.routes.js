@@ -35,6 +35,11 @@ module.exports = function(app) {
   //Get  
   // app.get("/api/supporters", controller.getAllSupporters);
   app.get("/api/organizations/:regCode", getController.getOrganization);
+  app.get("/api/region", getController.getRegionData);
+  app.get("/api/province", getController.getProvinceData);
+  app.get("/api/citymun/:id", getController.getCitymunData);
+  app.get("/api/barangay/:id", getController.getBarangayData);
+
   // app.get("/api/verify/:id", controller.verifyUser)
 
 

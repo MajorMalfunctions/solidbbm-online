@@ -18,9 +18,6 @@ module.exports = (sequelize, Sequelize) => {
       contact: {
           type: Sequelize.STRING
       },
-      psgcCode: {
-        type: Sequelize.INTEGER
-      },
       isVerified: {
           type: Sequelize.BOOLEAN,
           defaultValue: false
