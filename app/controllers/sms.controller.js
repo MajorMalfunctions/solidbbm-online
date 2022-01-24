@@ -32,19 +32,27 @@ exports.smsData = (req, res) => {
     res.status(200).json({body: req.body, query: req.query, params: req.params})      
 };
 
-exports.sendSms = async (req, res) => {
+exports.sendSms = (req, res) => {
 
     
-  await Mobiles.findAll({ where: { isVerified: true }, include: [{model: Supporter}]})
+   Mobiles.findAll({ where: { isVerified: true }, include: [{model: Supporter}]})
     .then(a => {
         console.log(a)
         if(a && a.length !== 0){
             for(const mb in a){
                 console.log(mb)
                  axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${config.smsCode}/requests?access_token=${mb.token}`, formatted_sms(mb.mobile, mb.supporters, req.body.message))
+                 .then(ab => {
+                     console.log('sent!')
+                 })
+                 .catch(err => {
+                    res.status(400).json({message: 'Something went wrong!'})  
+                 })
             }
+               res.status(200).json(a)  
+        } else {
+            res.status(200).json({message: 'No mobiles'})  
         }
-        res.status(200).json(a)  
     })
     .catch(err => {
         console.log(err)
