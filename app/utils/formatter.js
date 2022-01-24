@@ -18,7 +18,7 @@ exports.formatted_address = (data) => {
 }
 
 exports.formatted_sms = (address, supporter, message) => {
-    let text = `Salamat ${supporter.firstName} ${supporter.lastName} an imo supporta. `
+    // let text = `Salamat ${supporter.firstName} ${supporter.lastName} an imo supporta. `
 
     return { 
             outboundSMSMessageRequest: {
