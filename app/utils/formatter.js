@@ -17,13 +17,13 @@ exports.formatted_address = (data) => {
     }
 }
 
-exports.formatted_sms = (address, supporter) => {
+exports.formatted_sms = (address, supporter, message) => {
     let text = `Salamat ${supporter.firstName} ${supporter.lastName} an imo supporta. `
 
     return { 
             outboundSMSMessageRequest: {
         senderAddress: config.smsCode,
-        outboundSMSTextMessage: {message: "Hello World"},
+        outboundSMSTextMessage: {message},
         address: address
       }
     }

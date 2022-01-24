@@ -4,7 +4,7 @@ const db = require("../models");
 const Supporter = db.supporter;
 const Users = db.user;
 const Mobiles = db.mobile;
-
+const { formatted_sms } = require('../utils/formatter');
 
 exports.verifySms = (req, res) => {
     let { access_token, subscriber_number } = req.query;
@@ -37,14 +37,13 @@ exports.sendSms = async (req, res) => {
     
   await Mobiles.findAll({ where: { isVerified: true }, include: [{model: Supporter}]})
     .then(a => {
+        console.log(a)
         if(a && a.length !== 0){
-            for(mb in a){
+            for(const mb in a){
                 console.log(mb)
+                 axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${config.smsCode}/requests?access_token=${mb.token}`, formatted_sms(mb.mobile, mb.supporters, req.body.message))
             }
         }
-        // axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/1234/requests?access_token=3YM8xurK_IPdhvX4OUWXQljcHTIPgQDdTESLXDIes4g`)
-
-
         res.status(200).json(a)  
     })
     .catch(err => {
