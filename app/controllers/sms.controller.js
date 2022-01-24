@@ -43,10 +43,10 @@ exports.sendSms = (req, res) => {
                 console.log(mb)
                  axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${config.smsCode}/requests?access_token=${mb.token}`, formatted_sms(mb.mobile, mb.supporters, req.body.message))
                  .then(ab => {
-                     console.log('sent!')
+                     console.log(ab)
                  })
                  .catch(err => {
-                    res.status(400).json({message: 'Something went wrong!'})  
+                    console.log(err)
                  })
             }
                res.status(200).json(a)  
