@@ -39,9 +39,8 @@ exports.sendSms = (req, res) => {
     .then(a => {
         if(a && a.length !== 0){
             for(const mb in a){
-                console.log(mb)
-                console.log(mb.token)
-                 axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${config.smsCode}/requests?access_token=${mb.token}`, formatted_sms(mb.mobile, mb.supporters, req.body.message))
+                console.log(a[mb].token)
+                 axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${config.smsCode}/requests?access_token=${a[mb].token}`, formatted_sms(a[mb].mobile, a[mb].supporters, req.body.message))
                  .then(ab => {
                     //  console.log(ab)
                  })
