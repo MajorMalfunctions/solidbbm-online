@@ -37,16 +37,16 @@ exports.sendSms = (req, res) => {
     
    Mobiles.findAll({ where: { isVerified: true }, include: [{model: Supporter}]})
     .then(a => {
-        console.log(a)
         if(a && a.length !== 0){
             for(const mb in a){
                 console.log(mb)
+                console.log(mb.token)
                  axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${config.smsCode}/requests?access_token=${mb.token}`, formatted_sms(mb.mobile, mb.supporters, req.body.message))
                  .then(ab => {
-                     console.log(ab)
+                    //  console.log(ab)
                  })
                  .catch(err => {
-                    console.log(err)
+                    // console.log(err)
                  })
             }
                res.status(200).json(a)  
