@@ -8,6 +8,11 @@ const { formatted_sms } = require('../utils/formatter');
 
 exports.verifySms = (req, res) => {
     let { access_token, subscriber_number } = req.query;
+    console.log('VERIFY')
+    console.log({type: "Body", data: req.body})
+    console.log({type: "Query", data: req.query})
+    console.log({type: "Params", data: req.params})
+
 
     Mobiles.findOne({ where: { mobile: subscriber_number }, include: [{model: Supporter}]})
     .then(a => {
@@ -29,12 +34,15 @@ exports.verifySms = (req, res) => {
 
 
 exports.smsData = (req, res) => {
-    res.status(200).json({body: req.body, query: req.query, params: req.params})      
+    console.log('SMS DATA!')
+    console.log({type: "Body", data: req.body})
+    console.log({type: "Query", data: req.query})
+    console.log({type: "Params", data: req.params})
+
+    res.status(200).json({type: 'Success!'})      
 };
 
 exports.sendSms = (req, res) => {
-
-    
    Mobiles.findAll({ where: { isVerified: true }, include: [{model: Supporter}]})
     .then(a => {
         if(a && a.length !== 0){
