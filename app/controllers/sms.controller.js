@@ -7,7 +7,7 @@ const Mobiles = db.mobile;
 const { formatted_sms } = require('../utils/formatter');
 
 exports.verifySms = (req, res) => {
-    let { access_token, subscriber_number, code } = req.query;
+    let { code } = req.query;
     console.log('VERIFY')
     console.log({type: "Body", data: req.body})
     console.log({type: "Query", data: req.query})
@@ -18,13 +18,14 @@ exports.verifySms = (req, res) => {
      axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${config.smsAppId}&app_secret=${config.smsSecret}&code=${code}`)
         .then(ab => {
             console.log(ab)
-            // if(a){
-            //     Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
-            //       res.status(200).json({message: 'Subscriber Verified!'})        
-            //   } else {
-            //       Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
-            //       res.status(200).json({message: 'Subscriber Verified!'})    
-            //   }
+            let { access_token, subscriber_number } = ab.data;
+            if(ab){
+                Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
+                  res.status(200).json({message: 'Subscriber Verified!'})        
+              } else {
+                  Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
+                  res.status(200).json({message: 'Subscriber Verified!'})    
+              }
             return  res.status(200).json({type: 'Success'})
         })
         .catch(err => {
@@ -34,7 +35,7 @@ exports.verifySms = (req, res) => {
         })
 
     } else {
-
+      let { access_token, subscriber_number } = req.query;
        Mobiles.findOne({ where: { mobile: subscriber_number }, include: [{model: Supporter}]})
         .then(a => {
             if(a){
