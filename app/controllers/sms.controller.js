@@ -6,7 +6,7 @@ const Users = db.user;
 const Mobiles = db.mobile;
 const { formatted_sms } = require('../utils/formatter');
 
-exports.verifySms = async (req, res) => {
+exports.verifySms = (req, res) => {
     let { access_token, subscriber_number, code } = req.query;
     console.log('VERIFY')
     console.log({type: "Body", data: req.body})
@@ -15,7 +15,7 @@ exports.verifySms = async (req, res) => {
 
     if(code){
 
-        await axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${config.smsAppId}&app_secret=${config.smsSecret}&code=${code}`, formatted_sms(a[mb].mobile, a[mb].supporters, req.body.message))
+     axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${config.smsAppId}&app_secret=${config.smsSecret}&code=${code}`, formatted_sms(a[mb].mobile, a[mb].supporters, req.body.message))
         .then(ab => {
             console.log(ab)
             // if(a){
@@ -35,7 +35,7 @@ exports.verifySms = async (req, res) => {
 
     } else {
 
-        await Mobiles.findOne({ where: { mobile: subscriber_number }, include: [{model: Supporter}]})
+       Mobiles.findOne({ where: { mobile: subscriber_number }, include: [{model: Supporter}]})
         .then(a => {
             if(a){
               Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
