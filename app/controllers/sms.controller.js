@@ -21,16 +21,16 @@ exports.verifySms = (req, res) => {
             let { access_token, subscriber_number } = ab.data;
             if(ab){
                 Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
-                return   res.status(200).redirect("https://allinpaking.online")     
+                 return    res.status(200).json({message: 'Subscriber Verified!'})        
               } else {
                   Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
-                  return   res.status(200).redirect("https://allinpaking.online")       
+                  return   res.status(200).json({message: 'Subscriber Verified!'})    
               }
         })
         .catch(err => {
            // console.log(err)
            console.log(err)
-           return   res.status(200).redirect("https://allinpaking.online")     
+           return res.status(400).json({message: 'Something went wrong!'})  
         })
 
     } else {
@@ -39,15 +39,15 @@ exports.verifySms = (req, res) => {
         .then(a => {
             if(a){
               Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
-              return   res.status(200).redirect("https://allinpaking.online")         
+              return res.status(200).json({message: 'Subscriber Verified!'})        
             } else {
                 Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
-                return   res.status(200).redirect("https://allinpaking.online")     
+               return res.status(200).json({message: 'Subscriber Verified!'})    
             }
         })
         .catch(err => {
             console.log(err)
-            return   res.status(200).redirect("https://allinpaking.online")     
+            return  res.status(400).json({message: 'Something went wrong!'})  
         })
 }
 
