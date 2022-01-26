@@ -15,7 +15,7 @@ exports.verifySms = (req, res) => {
 
     if(code){
 
-     axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${config.smsAppId}&app_secret=${config.smsSecret}&code=${code}`, formatted_sms(a[mb].mobile, a[mb].supporters, req.body.message))
+     axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${config.smsAppId}&app_secret=${config.smsSecret}&code=${code}`)
         .then(ab => {
             console.log(ab)
             // if(a){
