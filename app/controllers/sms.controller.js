@@ -74,7 +74,7 @@ exports.smsData = (req, res) => {
     console.log({type: "Query", data: req.query})
     console.log({type: "Params", data: req.params})
 
-    Mobiles.findOne({ where: { mobile: subscriber_number, access_token  } })
+    Mobiles.findOne({ where: { mobile: subscriber_number, token: access_token  } })
     .then(a => {
         console.log(a);
         if(a){
