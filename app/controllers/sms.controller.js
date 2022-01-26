@@ -6,30 +6,51 @@ const Users = db.user;
 const Mobiles = db.mobile;
 const { formatted_sms } = require('../utils/formatter');
 
-exports.verifySms = (req, res) => {
-    let { access_token, subscriber_number } = req.query;
+exports.verifySms = async (req, res) => {
+    let { access_token, subscriber_number, code } = req.query;
     console.log('VERIFY')
     console.log({type: "Body", data: req.body})
     console.log({type: "Query", data: req.query})
     console.log({type: "Params", data: req.params})
 
+    if(code){
 
-    Mobiles.findOne({ where: { mobile: subscriber_number }, include: [{model: Supporter}]})
-    .then(a => {
-        if(a){
-          Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
-            res.status(200).json({message: 'Subscriber Verified!'})        
-        } else {
-            Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
-            res.status(200).json({message: 'Subscriber Verified!'})    
-        }
-    })
-    .catch(err => {
-        console.log(err)
-        res.status(200).json({message: 'Something went wrong!'})  
-    })
-   
-    
+        await axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${config.smsAppId}&app_secret=${config.smsSecret}&code=${code}`, formatted_sms(a[mb].mobile, a[mb].supporters, req.body.message))
+        .then(ab => {
+            console.log(ab)
+            // if(a){
+            //     Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
+            //       res.status(200).json({message: 'Subscriber Verified!'})        
+            //   } else {
+            //       Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
+            //       res.status(200).json({message: 'Subscriber Verified!'})    
+            //   }
+            return  res.status(200).json({type: 'Success'})
+        })
+        .catch(err => {
+           // console.log(err)
+           console.log(err)
+           return res.status(400).json({message: 'Something went wrong!'})  
+        })
+
+    } else {
+
+        await Mobiles.findOne({ where: { mobile: subscriber_number }, include: [{model: Supporter}]})
+        .then(a => {
+            if(a){
+              Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
+              return res.status(200).json({message: 'Subscriber Verified!'})        
+            } else {
+                Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
+               return res.status(200).json({message: 'Subscriber Verified!'})    
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            return  res.status(400).json({message: 'Something went wrong!'})  
+        })
+}
+
 };
 
 
