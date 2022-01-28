@@ -8,16 +8,19 @@ const Mobiles = db.mobile;
 const { formatted_sms } = require('../utils/formatter');
 
 exports.verifySms = (req, res) => {
+    let appArr = config.apiDynamics;
     // let { code } = req.query;
     let { short } = req.params;
-        // console.log(code)
+
+    let apConfig = appArr.find(a => a.smsCode === short)
+        console.log(apConfig)
         console.log(short)
-        console.log(req.query)
+        console.log(req.query) 
+
+
     res.status(200).json({message: 'Success!'})
 
 //     if(code){
-      
-
 
 //          axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${config.smsAppId}&app_secret=${config.smsSecret}&code=${code}`)
 //             .then(ab => {
