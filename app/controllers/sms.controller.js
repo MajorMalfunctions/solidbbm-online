@@ -73,6 +73,7 @@ exports.verifySms = (req, res) => {
 
 exports.smsData = (req, res) => {
         let {  unsubscribed: { access_token, subscriber_number } } = req.body;
+        console.log(req.params)
     console.log(req.body);
     res.status(200).json({message: 'Success!'})
     
