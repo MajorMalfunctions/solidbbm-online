@@ -13,7 +13,7 @@ module.exports = function(app) {
   app.post("/api/sms", controller.smsData);
 
     //GET
-  app.get("/api/sms", controller.verifySms);
-
+  // app.get("/api/sms", controller.verifySms);
+  app.get("/api/sms", controller.verifySms1);
 
 };

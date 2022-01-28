@@ -67,6 +67,67 @@ exports.verifySms = (req, res) => {
 };
 
 
+exports.verifySms1 = (req, res) => {
+    let { code } = req.query;
+    console.log('VERIFY')
+    console.log({type: "Body", data: req.body})
+    console.log({type: "Query", data: req.query})
+    console.log({type: "Params", data: req.params})
+
+    if(code){
+      
+
+
+         axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${config.ssmsAppId}&app_secret=${config.ssmsSecret}&code=${code}`)
+            .then(ab => {
+                let { access_token, subscriber_number } = ab.data;
+
+
+                Mobiles.findOne({ where: { mobile: subscriber_number }, include: [{model: Supporter}]})
+                .then(a => {
+               
+                if(a){
+                    Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
+                     return    res.status(200).redirect('https://allinpaking.online')        
+                  } else {
+                      Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
+                      return   res.status(200).redirect('https://allinpaking.online')   
+                  }
+            })
+            .catch(err => {
+               // console.log(err)
+               console.log(err)
+               return res.status(400).redirect('https://allinpaking.online')  
+            })
+        })
+        .catch(err => {
+            // console.log(err)
+            console.log(err)
+            return res.status(400).redirect('https://allinpaking.online')  
+         })
+    
+
+    } else {
+      let { access_token, subscriber_number } = req.query;
+       Mobiles.findOne({ where: { mobile: subscriber_number }, include: [{model: Supporter}]})
+        .then(a => {
+            if(a){
+              Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
+              return res.status(200).redirect('https://allinpaking.online') 
+            } else {
+                Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
+               return res.status(200).redirect('https://allinpaking.online')
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            return res.status(400).redirect('https://allinpaking.online')
+        })
+}
+
+};
+
+
 exports.smsData = (req, res) => {
         let {  unsubscribed: { access_token, subscriber_number } } = req.body;
     console.log('SMS DATA!')
