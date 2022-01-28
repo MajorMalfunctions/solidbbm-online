@@ -14,6 +14,7 @@ module.exports = function(app) {
 
     //GET
   // app.get("/api/sms", controller.verifySms);
-  app.get("/api/sms", controller.verifySms1);
+  app.get("/api/sms/:short", controller.verifySms);
+  app.get("/api/sms/test/:short", controller.testEndpoint);
 
 };
