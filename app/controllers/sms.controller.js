@@ -73,26 +73,24 @@ exports.verifySms = (req, res) => {
 
 exports.smsData = (req, res) => {
         let {  unsubscribed: { access_token, subscriber_number } } = req.body;
-    console.log('SMS DATA!')
-    console.log({type: "Body", data: req.body})
-    console.log({type: "Query", data: req.query})
-    console.log({type: "Params", data: req.params})
-
-    Mobiles.findOne({ where: { mobile: subscriber_number, token: access_token  } })
-    .then(a => {
-        console.log(a);
-        if(a){
-            Mobiles.update({isVerified: false }, { where: { mobile: subscriber_number }})
-            return res.status(200).redirect('https://allinpaking.online') 
-          } else {
-              Mobiles.create({mobile: subscriber_number, isVerified: false, token: access_token });
-             return res.status(200).redirect('https://allinpaking.online')
-          }
-    })
-    .catch(err => {
-        console.log(err)
-        return res.status(400).redirect('https://allinpaking.online')
-    })
+    console.log(req.body);
+    res.status(200).json({message: 'Success!'})
+    
+        // Mobiles.findOne({ where: { mobile: subscriber_number, token: access_token  } })
+    // .then(a => {
+    //     console.log(a);
+    //     if(a){
+    //         Mobiles.update({isVerified: false }, { where: { mobile: subscriber_number }})
+    //         return res.status(200).redirect('https://allinpaking.online') 
+    //       } else {
+    //           Mobiles.create({mobile: subscriber_number, isVerified: false, token: access_token });
+    //          return res.status(200).redirect('https://allinpaking.online')
+    //       }
+    // })
+    // .catch(err => {
+    //     console.log(err)
+    //     return res.status(400).redirect('https://allinpaking.online')
+    // })
 };
 
 exports.sendSms = (req, res) => {
