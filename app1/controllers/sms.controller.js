@@ -13,29 +13,23 @@ exports.verifySms = (req, res) => {
     if(short){
     SmsApp.findOne({where: { short: short }})
     .then(doc => {
-        console.log(doc)
+        // console.log(doc)
         console.log(code)
                    if(code){
+                    console.log('WEB OPT VERIFY')
                          axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${doc.appkey}&app_secret=${doc.appsecret}&code=${code}`)
                             .then(ab => {
                                 let { access_token, subscriber_number } = ab.data;
+                                console.log(ab.data)
                                 Mobiles.findOne({ where: { subcriber_number: subscriber_number, code: doc.code }})
                                 .then(a => {
-                            
+
                                 if(a){
                                     Mobiles.update({access_token: access_token, code: doc.code, short: doc.short, isVerified: true }, { where: { subcriber_number: subscriber_number, code: doc.code  }})
                                      return    res.status(200).redirect('https://allinpaking.online')        
                                   } else {
                                       Mobiles.create({subcriber_number: subscriber_number, code: doc.code, short: doc.short, isVerified: true, access_token: access_token })
-                                      .then(mob => {
-                                          mob.setApps([mob]);
-                                        return   res.status(200).redirect('https://allinpaking.online')  
-                                      })
-                                      .catch(err => {
-                                        // console.log(err)
-                                        console.log(err)
-                                        return res.status(400).redirect('https://allinpaking.online')  
-                                     })
+                                      return    res.status(200).redirect('https://allinpaking.online')      
                                   }
                             })
                             .catch(err => {
@@ -52,6 +46,7 @@ exports.verifySms = (req, res) => {
                     
 
                     } else {
+                        console.log('SMS VERIFY')
                       let { access_token, subscriber_number } = req.query;
                        Mobiles.findOne({ where: { subcriber_number: subscriber_number, code: doc.code  }})
                         .then(a => {
