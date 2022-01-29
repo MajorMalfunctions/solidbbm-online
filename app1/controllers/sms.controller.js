@@ -13,6 +13,8 @@ exports.verifySms = (req, res) => {
     if(short){
     SmsApp.findOne({where: { short: short }})
     .then(doc => {
+        console.log(doc)
+        console.log(code)
                    if(code){
                          axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${doc.appkey}&app_secret=${doc.appsecret}&code=${code}`)
                             .then(ab => {
