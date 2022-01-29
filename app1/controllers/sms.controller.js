@@ -86,42 +86,51 @@ exports.verifySms = (req, res) => {
 exports.smsData = (req, res) => {
     let { short } = req.params;
         let {  unsubscribed, inboundSMSMessageList } = req.body;
+try {
+    if(short){
+        SmsApp.findOne({where: { short: short }})
+        .then(doc => {
+            if(unsubscribed){
+                let {  access_token, subscriber_number } = unsubscribed;
 
-        if(short){
-            SmsApp.findOne({where: { short: short }})
-            .then(doc => {
-                if(unsubscribed){
-                    let {  access_token, subscriber_number } = unsubscribed;
+                            Mobiles.findOne({ where: { subcriber_number: subscriber_number,access_token: access_token, short: doc.short  } })
+                                .then(a => {
+                                    console.log(a);
+                                    if(a){
+                                        Mobiles.update({isVerified: false }, { where: { id: a.id }})
+                                        return res.status(200).json({message: 'Unsubscribed!', data: unsubscribed})
 
-                                Mobiles.findOne({ where: { subcriber_number: subscriber_number,access_token: access_token, short: doc.short  } })
-                                    .then(a => {
-                                        console.log(a);
-                                        if(a){
-                                            Mobiles.update({isVerified: false }, { where: { id: a.id }})
-                                            return res.status(200).redirect('https://allinpaking.online') 
-                                          } else {
-                                              Mobiles.create({
-                                                  subcriber_number: subscriber_number, isVerified: false, access_token: access_token, short: doc.short, code: doc.code
-                                                });
-                                             return res.status(200).redirect('https://allinpaking.online')
-                                          }
-                                    })
-                                    .catch(err => {
-                                        console.log(err)
-                                        return res.status(400).redirect('https://allinpaking.online')
-                                    })
-                   return res.status(200).json({message: 'Unsubscribed!', data: unsubscribed})
-                }
-                if(inboundSMSMessageList){
-                    return res.status(200).json({message: 'SMS RECEIVED', data: inboundSMSMessageList})
-                }
-            })
-            .catch(err => {
-               return res.status(400).json({message: 'Cant Find Short Code!', error: err})
-            })
-            } else {
-                return  res.status(400).json({message: 'No Short Code!'})
+                                      } else {
+                                          Mobiles.create({
+                                              subcriber_number: subscriber_number, isVerified: false, access_token: access_token, short: doc.short, code: doc.code
+                                            });
+                                            return res.status(200).json({message: 'Unsubscribed!', data: unsubscribed})
+
+                                      }
+                                })
+                                .catch(err => {
+                                    console.log(err)
+                                    console.log('Unsibscribe Error!')
+                                    return res.status(200).json({message: 'Unsubscribed Error!', data: unsubscribed})
+
+                                })
             }
+            if(inboundSMSMessageList){
+                return res.status(200).json({message: 'SMS RECEIVED', data: inboundSMSMessageList})
+            }
+        })
+        .catch(err => {
+            console.log(err)
+           return res.status(400).json({message: 'Cant Find Short Code!', error: err})
+        })
+        } else {
+            return  res.status(400).json({message: 'No Short Code!'})
+        }
+} catch(err) {
+    console.log(err)
+    return  res.status(400).json({message: 'Something Went Wrong'})
+}
+     
 
         // Mobiles.findOne({ where: { subcriber_number: subscriber_number,access_token: access_token  } })
     // .then(a => {
