@@ -5,31 +5,53 @@ const db = require("../models");
 
 const Mobiles = db.mobile;
 const SmsApp = db.app;
+
+const Op = db.Sequelize.Op;
+
 const { formatted_sms } = require('../utils/formatter');
 
 exports.verifySms = (req, res) => {
     let { code } = req.query;
     let { short } = req.params;
-    if(short){
-    SmsApp.findOne({where: { short: short }})
+    console.log(!short)
+    if(!short) return res.status(400).json({message: 'Missing Short Code!'})
+    SmsApp.findOne({where: { short: String(short) }})
     .then(doc => {
-        // console.log(doc)
+        console.log(doc)
         console.log(code)
+        console.log(short)
                    if(code){
                     console.log('WEB OPT VERIFY')
-                         axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${doc.appkey}&app_secret=${doc.appsecret}&code=${code}`)
-                            .then(ab => {
-                                let { access_token, subscriber_number } = ab.data;
-                                console.log(ab.data)
-                                Mobiles.findOne({ where: { subcriber_number: subscriber_number, code: doc.code }})
+                        //  axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${doc.appkey}&app_secret=${doc.appsecret}&code=${code}`)
+                        //     .then(ab => {
+                            let access_token = 'awda'
+                            let subscriber_number = '974461641'
+                                // let { access_token, subscriber_number } = ab.data;
+                                // console.log(ab.data)
+                                Mobiles.findOne({ where: { 
+                                    [Op.and]: [
+                                        { subscriber_number },
+                                        { code: doc.code }
+                                      ]
+                                  }})
                                 .then(a => {
-
+                                        console.log(a)
                                 if(a){
-                                    Mobiles.update({access_token: access_token, code: doc.code, short: doc.short, isVerified: true }, { where: { subcriber_number: subscriber_number, code: doc.code  }})
-                                     return    res.status(200).redirect('https://allinpaking.online')        
+                                    Mobiles.update({access_token: access_token, code: doc.code, short: doc.short, isVerified: true }, { where: {    [Op.and]: [
+                                        { subscriber_number },
+                                        { code: doc.code }
+                                      ]  }})
+                                     return res.status(200).redirect('https://allinpaking.online')        
                                   } else {
-                                      Mobiles.create({subcriber_number: subscriber_number, code: doc.code, short: doc.short, isVerified: true, access_token: access_token })
-                                      return    res.status(200).redirect('https://allinpaking.online')      
+                                      Mobiles.create({subscriber_number: subscriber_number, code: doc.code, short: doc.short, isVerified: true, access_token: access_token })
+                                      .then(mob => {
+                                          mob.setApps([doc]);
+                                               return res.status(200).redirect('https://allinpaking.online')      
+                                      })
+                                      .catch(err => {
+                                        // console.log(err)
+                                        return res.status(400).redirect('https://allinpaking.online')  
+                                     })
                                   }
                             })
                             .catch(err => {
@@ -37,25 +59,42 @@ exports.verifySms = (req, res) => {
                                console.log(err)
                                return res.status(400).redirect('https://allinpaking.online')  
                             })
-                        })
-                        .catch(err => {
-                            // console.log(err)
-                            console.log(err)
-                            return res.status(400).redirect('https://allinpaking.online')  
-                         })
+                        // })
+                        // .catch(err => {
+                        //     // console.log(err)
+                        //     console.log(err)
+                        //     return res.status(400).redirect('https://allinpaking.online')  
+                        //  })
                     
 
                     } else {
                         console.log('SMS VERIFY')
                       let { access_token, subscriber_number } = req.query;
-                       Mobiles.findOne({ where: { subcriber_number: subscriber_number, code: doc.code  }})
+                       Mobiles.findOne({ where: { 
+                        [Op.and]: [
+                            { subscriber_number },
+                            { code: doc.code }
+                          ]
+                      }})
                         .then(a => {
                             if(a){
-                              Mobiles.update({access_token: access_token, isVerified: true }, { where: { subcriber_number: subscriber_number, code: doc.code }})
+                              Mobiles.update({access_token: access_token, isVerified: true }, { where: { 
+                                [Op.and]: [
+                                    { subscriber_number },
+                                    { code: doc.code }
+                                  ]
+                              }})
                               return res.status(200).redirect('https://allinpaking.online') 
                             } else {
-                                Mobiles.create({subcriber_number: subscriber_number, isVerified: true, access_token: access_token, code: doc.code, short: doc.short, isVerified: true });
-                               return res.status(200).redirect('https://allinpaking.online')
+                                Mobiles.create({subscriber_number: subscriber_number, code: doc.code, short: doc.short, isVerified: true, access_token: access_token })
+                                      .then(mob => {
+                                          mob.setApps([doc]);
+                                               return res.status(200).redirect('https://allinpaking.online')      
+                                      })
+                                      .catch(err => {
+                                        // console.log(err)
+                                        return res.status(400).redirect('https://allinpaking.online')  
+                                     })
                             }
                         })
                         .catch(err => {
@@ -65,15 +104,9 @@ exports.verifySms = (req, res) => {
                 }
     })
     .catch(err => {
-        res.status(400).json({message: 'Cant Find Short Code!', error: err})
+        console.log(err)
+        return res.status(400).json({message: 'Cant Find Short Code!', error: err})
     })
-        } else {
-            res.status(400).json({message: 'No Short Code'})
-        }
-
-
-
-
 
 };
 
@@ -85,12 +118,16 @@ exports.smsData = (req, res) => {
         let {  unsubscribed, inboundSMSMessageList } = req.body;
 try {
     if(short){
-        SmsApp.findOne({where: { short: short }})
+        SmsApp.findOne({where: { short: String(short) }})
         .then(doc => {
             if(unsubscribed){
                 let {  access_token, subscriber_number } = unsubscribed;
 
-                            Mobiles.findOne({ where: { subcriber_number: subscriber_number,access_token: access_token, short: doc.short  } })
+                            Mobiles.findOne({ where: { [Op.and]: [
+                                { subscriber_number },
+                                { access_token: access_token },
+                                { short: doc.short }
+                              ]  }})
                                 .then(a => {
                                     console.log(a);
                                     if(a){
@@ -99,7 +136,7 @@ try {
 
                                       } else {
                                           Mobiles.create({
-                                              subcriber_number: subscriber_number, isVerified: false, access_token: access_token, short: doc.short, code: doc.code
+                                              subscriber_number: subscriber_number, isVerified: false, access_token: access_token, short: doc.short, code: doc.code
                                             });
                                             return res.status(200).json({message: 'Unsubscribed!', data: unsubscribed})
 
