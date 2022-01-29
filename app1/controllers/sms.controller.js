@@ -118,13 +118,16 @@ try {
         })
         .catch(err => {
             console.log(err)
+            console.log('Cant Find Short Code!')
            return res.status(400).json({message: 'Cant Find Short Code!', error: err})
         })
         } else {
+            console.log('No Short Code')
             return  res.status(400).json({message: 'No Short Code!'})
         }
 } catch(err) {
     console.log(err)
+    console.log('Something Went wrong')
     return  res.status(400).json({message: 'Something Went Wrong'})
 }
      
