@@ -13,21 +13,18 @@ const { formatted_sms } = require('../utils/formatter');
 exports.verifySms = (req, res) => {
     let { code } = req.query;
     let { short } = req.params;
-    console.log(!short)
     if(!short) return res.status(400).json({message: 'Missing Short Code!'})
     SmsApp.findOne({where: { short: String(short) }})
     .then(doc => {
-        console.log(doc)
-        console.log(code)
         console.log(short)
                    if(code){
                     console.log('WEB OPT VERIFY')
-                        //  axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${doc.appkey}&app_secret=${doc.appsecret}&code=${code}`)
-                        //     .then(ab => {
-                            let access_token = 'awda'
-                            let subscriber_number = '974461641'
-                                // let { access_token, subscriber_number } = ab.data;
-                                // console.log(ab.data)
+                         axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${doc.appkey}&app_secret=${doc.appsecret}&code=${code}`)
+                            .then(ab => {
+                            // let access_token = 'awda'
+                            // let subscriber_number = '974461641'
+                                let { access_token, subscriber_number } = ab.data;
+                                console.log(ab.data)
                                 Mobiles.findOne({ where: { 
                                     [Op.and]: [
                                         { subscriber_number },
@@ -35,7 +32,6 @@ exports.verifySms = (req, res) => {
                                       ]
                                   }})
                                 .then(a => {
-                                        console.log(a)
                                 if(a){
                                     Mobiles.update({access_token: access_token, code: doc.code, short: doc.short, isVerified: true }, { where: {    [Op.and]: [
                                         { subscriber_number },
@@ -59,12 +55,12 @@ exports.verifySms = (req, res) => {
                                console.log(err)
                                return res.status(400).redirect('https://allinpaking.online')  
                             })
-                        // })
-                        // .catch(err => {
-                        //     // console.log(err)
-                        //     console.log(err)
-                        //     return res.status(400).redirect('https://allinpaking.online')  
-                        //  })
+                        })
+                        .catch(err => {
+                            // console.log(err)
+                            console.log(err)
+                            return res.status(400).redirect('https://allinpaking.online')  
+                         })
                     
 
                     } else {
