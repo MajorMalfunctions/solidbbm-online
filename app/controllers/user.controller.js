@@ -17,6 +17,7 @@ const Op = db.Sequelize.Op;
 const { validateSupporterDetails, validateMapDetails } = require('../utils/validators')
 const { formatted_address } = require('../utils/formatter');
 const { countAge, toUpperCase } = require('../utils/helpers');
+const supporterModel = require('../models/supporter.model');
 
 
 exports.createSupporterDetails = async (req, res) => {
@@ -74,7 +75,7 @@ exports.createSupporterDetails = async (req, res) => {
         reg.addRegionSupport(sup);
         //  sup.setBarangaySupport([bar]);
         //  bar.addBarangaySupports(sup);
-          return res.status(200).json(sup);
+          return res.status(200).json({id: sup.id, message: {  text: 'Supporter Saved Successfully!', type: 'success'}, steps: 0});
       })
       .catch((err) => {
         console.log(">>Error While Saving Supporter! ", err);
@@ -84,7 +85,7 @@ exports.createSupporterDetails = async (req, res) => {
       if(doc.locationId){
         return res.status(400).json({ message: { text: 'Already exist on Master List!',type: 'warning'},  steps: 0});
       }else {
-        return res.status(400).json({ message: { text: 'Pin your location!', steps: 1, type: 'warning'},  steps: 1});
+        return res.status(200).json({ id: doc.id, message: { text: 'Supporter Saved Successfully!', type: 'success'},  steps: 1});
       }
     }
   })
