@@ -42,6 +42,7 @@ module.exports = function(app) {
 
 
  //Get
+ app.get("/api/supporters-count", getController.getSupportersCount);
  app.get("/api/supporters/barangay/:brgyCode", getController.findBarangaySupporters);
  app.get("/api/provinces", getController.findProvinceCitymun);
  app.get("/api/regions", getController.findRegionProvinces);

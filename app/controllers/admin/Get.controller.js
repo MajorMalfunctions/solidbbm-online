@@ -46,7 +46,6 @@ exports.getAllSupportersCount =  (req, res) => {
       console.log(">>Error While Fetching Supporters! ", err);
      return res.status(400).send({ error: err, message: 'Error While Fetching Supporters!'});
     });
-  
   };
 
 

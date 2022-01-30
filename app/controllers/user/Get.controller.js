@@ -41,6 +41,45 @@ exports.findAllPosts = (req, res) => {
 };
 
 
+
+
+
+exports.getSupportersCount =  (req, res) => {
+  let obj = {};
+    Supporters.findAll({ include: [{
+      model: location,
+      required: false
+  }] })
+    .then((doc) => {
+      return res.status(200).json(doc.length);
+    })
+    .catch((err) => {
+      console.log(">>Error While Fetching Supporters! ", err);
+     return res.status(400).send({ error: err, message: 'Error While Fetching Supporters!'});
+    });
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 exports.findBarangaySupporters = (req, res) => {
   let { brgyCode } = req.params
 
