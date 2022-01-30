@@ -167,28 +167,22 @@ exports.sendSms = async (req, res) => {
     let { short } = req.params;
   if(!short) return  res.status(400).json({message: 'No Short Code!'}) 
 
-    if(mobs && mobs.length == 0) return res.status(400).json({message: 'No Mobiles'})
+ if(mobs && mobs.length == 0) return res.status(400).json({message: 'No Mobiles on body'})
 
 
 await SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles, where: { isVerified: true }, required: false}]})
   .then(doc => {
         let {mobiles} = doc;
-            let recmob = mobs.map(a =>{
-                let obj = mobiles.find(ab => String(ab.subscriber_number) == String(a));
-                mobiles.forEach(ab => {
-                    // String(ab.subscriber_number) == String(a)
-                    console.log(String(ab.subscriber_number) == String(a))
-                    console.log(String(ab.subscriber_number))
-                    console.log(ab)
-                    return ab
-                });
-                return  obj
-            }) 
+          
 
-    if(!doc || !recmob) return res.status(400).json({message: 'No Mobiles'})
-      for(const mb in  recmob){
-            console.log(recmob[mb])
-            axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${doc.short}/requests?access_token=${recmob[mb].access_token}`, formatted_sms(recmob[mb].subscriber_number, req.body.message))
+    if(!mobiles || mobiles && mobiles.length == 0 ) return res.status(400).json({message: 'No Mobiles verified'})
+      for(const mb in  mobiles){
+            console.log([mb])
+
+            let ind = mobs.indexOf(mobiles[mb].subscriber_number);
+            console.log(ind)
+            ind !== -1 &&
+            axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${doc.short}/requests?access_token=${mobiles[mb].access_token}`, formatted_sms(mobiles[mb].subscriber_number, req.body.message))
                 .then(ab => {
                      console.log(ab)
                  })
@@ -198,7 +192,7 @@ await SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles
                 })
     }
     //   console.log(doc)
-    res.status(200).json('Success !')
+   return res.status(200).json('Success !')
 })
 .catch(err => {
     console.log(err)
