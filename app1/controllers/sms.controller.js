@@ -161,7 +161,7 @@ exports.smsData = (req, res) => {
         })
 };
 
-exports.sendSms = (req, res) => {
+exports.sendSms = async (req, res) => {
     let mobs = req.body.mobiles;
 
     let { short } = req.params;
@@ -170,7 +170,7 @@ exports.sendSms = (req, res) => {
     if(mobs && mobs.length == 0) return res.status(400).json({message: 'No Mobiles'})
 
 
-  SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles, where: { isVerified: true }, required: false}]})
+await SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles, where: { isVerified: true }, required: false}]})
   .then(doc => {
         let {mobiles} = doc;
             let recmob = mobs.map(a =>{
@@ -180,19 +180,22 @@ exports.sendSms = (req, res) => {
             }) 
             
 
-    if(!doc || !recmob || recmob && recmob.length == 0) return res.status(400).json({message: 'No Mobiles'})
+    if(!doc || !recmob) return res.status(400).json({message: 'No Mobiles'})
       for(const mb in  recmob){
             console.log(recmob[mb])
      recmob[mb] && axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${doc.short}/requests?access_token=${recmob[mb].access_token}`, formatted_sms(recmob[mb].subscriber_number, req.body.message))
                 .then(ab => {
-                    //  console.log(ab)
+                     console.log(ab)
+                     return ab
                  })
                  .catch(err => {
+
                     console.log(err)
-                 })
+                    return 
+                })
     }
     //   console.log(doc)
-    res.status(200).json(doc)
+    res.status(200).json('Success !')
 })
 .catch(err => {
     console.log(err)
