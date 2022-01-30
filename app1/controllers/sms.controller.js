@@ -212,9 +212,18 @@ exports.sendSms = (req, res) => {
 
 
 
-exports.testEndpoint = (req, res) => {
-    let { code } = req.query;
-    let { short } = req.params;
-       
-    
+exports.getAllMobile = (req, res) => {
+
+      Mobiles.findAll({include: [{
+        model: SmsApp,
+        required: false
+    }] })
+      .then(doc => {
+        return  res.status(200).json(doc);
+      }) 
+      .catch(err => {
+          console.log(err)
+          return res.status(400).json({message: 'Something Went Wrong!'})
+      })
+
 };
