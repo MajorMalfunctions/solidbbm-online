@@ -112,9 +112,8 @@ exports.verifySms = (req, res) => {
 exports.smsData = (req, res) => {
     let { short } = req.params;
         let {  unsubscribed, inboundSMSMessageList } = req.body;
-        // console.log('No Short Code')
+        console.log('No Short Code')
       if(!short) return  res.status(400).json({message: 'No Short Code!'})
-    if(short){
         SmsApp.findOne({where: { short: String(short) }})
         .then(doc => {
             if(unsubscribed){
@@ -161,69 +160,71 @@ exports.smsData = (req, res) => {
             console.log('Cant Find Short Code!')
            return res.status(400).json({message: 'Cant Find Short Code!'})
         })
-        }
-
-     
-
-        // Mobiles.findOne({ where: { subcriber_number: subscriber_number,access_token: access_token  } })
-    // .then(a => {
-    //     console.log(a);
-    //     if(a){
-    //         Mobiles.update({isVerified: false }, { where: { subcriber_number: subscriber_number }})
-    //         return res.status(200).redirect('https://allinpaking.online') 
-    //       } else {
-    //           Mobiles.create({subcriber_number: subscriber_number, isVerified: false,access_token: access_token });
-    //          return res.status(200).redirect('https://allinpaking.online')
-    //       }
-    // })
-    // .catch(err => {
-    //     console.log(err)
-    //     return res.status(400).redirect('https://allinpaking.online')
-    // })
 };
 
 exports.sendSms = (req, res) => {
-    // let smsCode = 
+    let mobs = req.body.mobiles;
+
+    let { short } = req.params;
+  if(!short) return  res.status(400).json({message: 'No Short Code!'}) 
+
+    if(mobs && mobs.length == 0) return res.status(400).json({message: 'No Mobiles'})
 
 
-   Mobiles.findAll({ where: { isVerified: true }})
-    .then(a => {
-        if(a && a.length !== 0){
-            for(const mb in a){
-                console.log(a[mb].token)
-                 axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${config.smsCode}/requests?access_token=${a[mb].token}`, formatted_sms(a[mb].mobile, a[mb].supporters, req.body.message))
-                 .then(ab => {
+
+  SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles, where: { isVerified: true }, required: false}]})
+  .then(doc => {
+        let {mobiles} = doc;
+        console.log(mobiles)
+            let recmob = mobs.map(a =>{
+                console.log(a)
+                let obj = mobiles.find(ab => String(ab.subscriber_number) == String(a));
+                console.log(obj)
+                return obj
+            }) 
+
+
+        console.log(recmob)
+    if(!doc || !recmob || recmob && recmob.length == 0) return res.status(400).json({message: 'No Mobiles'})
+      for(const mb in  recmob){
+
+     recmob[mb] && axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${doc.short}/requests?access_token=${recmob[mb].access_token}`, formatted_sms(recmob[mb].subscriber_number, req.body.message))
+                .then(ab => {
                     //  console.log(ab)
                  })
                  .catch(err => {
-                    // console.log(err)
+                    console.log(err)
                  })
-            }
-               res.status(200).json(a)  
-        } else {
-            res.status(200).json({message: 'No mobiles'})  
-        }
-    })
-    .catch(err => {
-        console.log(err)
-        res.status(400).json({message: 'Something went wrong!'})  
-    })
+    }
+    //   console.log(doc)
+    res.status(200).json(doc)
+})
+.catch(err => {
+    console.log(err)
+    console.log('Cant Find Short Code!')
+   return res.status(400).json({message: 'Cant Find Short Code!'})
+})
+
 };
-
-
 
 exports.getAllMobile = (req, res) => {
 
-      Mobiles.findAll({include: [{
-        model: SmsApp,
-        required: false
-    }] })
-      .then(doc => {
-        return  res.status(200).json(doc);
-      }) 
-      .catch(err => {
-          console.log(err)
-          return res.status(400).json({message: 'Something Went Wrong!'})
-      })
+    Mobiles.findAll({include: [{
+      model: SmsApp,
+      required: false
+  }] })
+    .then(doc => {
+      return  res.status(200).json(doc);
+    }) 
+    .catch(err => {
+        console.log(err)
+        return res.status(400).json({message: 'Something Went Wrong!'})
+    })
+};
 
+exports.testEndpoint = (req, res) => {
+    let { code } = req.query;
+    let { short } = req.params;
+       
+    return  res.status(200).json({message: 'TESTING'});
 };
