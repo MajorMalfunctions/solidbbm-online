@@ -163,42 +163,48 @@ exports.smsData = (req, res) => {
 
 exports.sendSms = async (req, res) => {
     let mobs = req.body.mobiles;
-
     let { short } = req.params;
+
+try {
+
+
   if(!short) return  res.status(400).json({message: 'No Short Code!'}) 
 
  if(mobs && mobs.length == 0) return res.status(400).json({message: 'No Mobiles on body'})
 
+ let sapp = await SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles, where: { isVerified: true }, required: false}]});
 
-await SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles, where: { isVerified: true }, required: false}]})
-  .then(doc => {
-        let {mobiles} = doc;
+ let {mobiles} = sapp;
           
 
     if(!mobiles || mobiles && mobiles.length == 0 ) return res.status(400).json({message: 'No Mobiles verified'})
-      for(const mb in  mobiles){
-            console.log([mb])
-
-            let ind = mobs.indexOf(mobiles[mb].subscriber_number);
-            console.log(ind)
-            ind !== -1 &&
-            axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${doc.short}/requests?access_token=${mobiles[mb].access_token}`, formatted_sms(mobiles[mb].subscriber_number, req.body.message))
+    const promises = mobiles.map( async (abc, index) => {
+            // let status = { subscriber_number: obj.subscriber_number, isSuccess: null }
+            let ind = await mobs.indexOf(abc.subscriber_number);
+            if(ind !== -1){
+                console.log(sapp.short)
+              let status = await axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${sapp.short}/requests?access_token=${abc.access_token}`, formatted_sms(abc.subscriber_number, req.body.message, index))
                 .then(ab => {
-                     console.log(ab)
+                  return { subscriber_number: abc.subscriber_number, isSuccess: true }  
                  })
                  .catch(err => {
                      console.log('Sending Error')
                     console.log(err)
+                  return { subscriber_number: abc.subscriber_number, isSuccess: false }  
                 })
-    }
+             return status
+            } else {
+                return  { subscriber_number: abc.subscriber_number, isSuccess: null }
+            }
+    } )
+    const procData = await Promise.all(promises);
     //   console.log(doc)
-   return res.status(200).json('Success !')
-})
-.catch(err => {
+   return res.status(200).json({status: 'Success !', procData})
+
+} catch (err) {
     console.log(err)
-    console.log('Cant Find Short Code!')
-   return res.status(400).json({message: 'Cant Find Short Code!'})
-})
+    return res.status(400).json({message: 'Cant Find Short Code!'})
+}
 
 };
 

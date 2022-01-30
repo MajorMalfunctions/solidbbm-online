@@ -1,0 +1,12 @@
+HOST=localhost
+DBUSER=root
+PASSWORD=
+DB=allindb
+PORT=23000
+
+
+SMSHOST=localhost
+SMSDBUSER=root
+SMSPASSWORD=
+SMSDB=smsalldbdev
+SMSPORT=23001

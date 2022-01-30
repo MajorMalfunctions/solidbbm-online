@@ -26,7 +26,7 @@ exports.findAllPosts = (req, res) => {
   Posts.findAll({
     where: {isDeleted: false},
     include: [{ model: Medias, as: 'PostMedia', where: { isDeleted: false } }, { model: Users, attributes: ['id'], include: [{model: Supporters}, {model: Medias, as: 'UserProfile'}] }]
-     })
+     }) 
     .then(doc => {
         let featuredPosts = doc.filter(a => a.postType === 'featured');
         let normalPosts = doc.filter(a => a.postType === 'normal');
