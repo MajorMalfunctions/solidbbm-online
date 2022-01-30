@@ -175,11 +175,17 @@ await SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles
         let {mobiles} = doc;
             let recmob = mobs.map(a =>{
                 console.log(a)
-                let obj = mobiles.find(ab => String(ab.subscriber_number) == String(a));
-                return obj
+                let obj = mobiles.forEach(ab => {
+                    // String(ab.subscriber_number) == String(a)
+                    console.log(String(ab.subscriber_number) == String(a))
+                    console.log(String(ab.subscriber_number))
+                    console.log(ab)
+                    return ab
+                });
+                return  obj
             }) 
             
-
+            console.log(recmob)
     if(!doc || !recmob) return res.status(400).json({message: 'No Mobiles'})
       for(const mb in  recmob){
             console.log(recmob[mb])
