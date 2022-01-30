@@ -112,7 +112,6 @@ exports.verifySms = (req, res) => {
 exports.smsData = (req, res) => {
     let { short } = req.params;
         let {  unsubscribed, inboundSMSMessageList } = req.body;
-        console.log('No Short Code')
       if(!short) return  res.status(400).json({message: 'No Short Code!'})
         SmsApp.findOne({where: { short: String(short) }})
         .then(doc => {
@@ -171,23 +170,19 @@ exports.sendSms = (req, res) => {
     if(mobs && mobs.length == 0) return res.status(400).json({message: 'No Mobiles'})
 
 
-
   SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles, where: { isVerified: true }, required: false}]})
   .then(doc => {
         let {mobiles} = doc;
-        console.log(mobiles)
             let recmob = mobs.map(a =>{
                 console.log(a)
                 let obj = mobiles.find(ab => String(ab.subscriber_number) == String(a));
-                console.log(obj)
                 return obj
             }) 
+            
 
-
-        console.log(recmob)
     if(!doc || !recmob || recmob && recmob.length == 0) return res.status(400).json({message: 'No Mobiles'})
       for(const mb in  recmob){
-
+            console.log(recmob[mb])
      recmob[mb] && axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${doc.short}/requests?access_token=${recmob[mb].access_token}`, formatted_sms(recmob[mb].subscriber_number, req.body.message))
                 .then(ab => {
                     //  console.log(ab)
