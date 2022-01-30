@@ -174,8 +174,8 @@ await SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles
   .then(doc => {
         let {mobiles} = doc;
             let recmob = mobs.map(a =>{
-                console.log(a)
-                let obj = mobiles.forEach(ab => {
+                let obj = mobiles.find(ab => String(ab.subscriber_number) == String(a));
+                mobiles.forEach(ab => {
                     // String(ab.subscriber_number) == String(a)
                     console.log(String(ab.subscriber_number) == String(a))
                     console.log(String(ab.subscriber_number))
@@ -184,24 +184,20 @@ await SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles
                 });
                 return  obj
             }) 
-            
+
     if(!doc || !recmob) return res.status(400).json({message: 'No Mobiles'})
       for(const mb in  recmob){
             console.log(recmob[mb])
-            // axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${doc.short}/requests?access_token=${recmob[mb].access_token}`, formatted_sms(recmob[mb].subscriber_number, req.body.message))
-            //     .then(ab => {
-            //          console.log(ab)
-            //          return ab
-            //      })
-            //      .catch(err => {
-
-            //         console.log(err)
-            //         return 
-            //     })
+            axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${doc.short}/requests?access_token=${recmob[mb].access_token}`, formatted_sms(recmob[mb].subscriber_number, req.body.message))
+                .then(ab => {
+                     console.log(ab)
+                 })
+                 .catch(err => {
+                     console.log('Sending Error')
+                    console.log(err)
+                })
     }
     //   console.log(doc)
-    console.log(recmob)
-
     res.status(200).json('Success !')
 })
 .catch(err => {
