@@ -185,22 +185,23 @@ await SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles
                 return  obj
             }) 
             
-            console.log(recmob)
     if(!doc || !recmob) return res.status(400).json({message: 'No Mobiles'})
       for(const mb in  recmob){
             console.log(recmob[mb])
-      axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${doc.short}/requests?access_token=${recmob[mb].access_token}`, formatted_sms(recmob[mb].subscriber_number, req.body.message))
-                .then(ab => {
-                     console.log(ab)
-                     return ab
-                 })
-                 .catch(err => {
+            // axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${doc.short}/requests?access_token=${recmob[mb].access_token}`, formatted_sms(recmob[mb].subscriber_number, req.body.message))
+            //     .then(ab => {
+            //          console.log(ab)
+            //          return ab
+            //      })
+            //      .catch(err => {
 
-                    console.log(err)
-                    return 
-                })
+            //         console.log(err)
+            //         return 
+            //     })
     }
     //   console.log(doc)
+    console.log(recmob)
+
     res.status(200).json('Success !')
 })
 .catch(err => {
