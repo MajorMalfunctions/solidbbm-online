@@ -24,6 +24,7 @@ module.exports = function(app) {
   //Update
   app.put("/api/post/:id", updateController.updatePost);
   // app.put("/api/post/:id", updateController.updatePost);
+  // app.put("/api/post/:id", updateController.updatePost);
   // app.put("/api/upload/:id", updateController.updateUpload);
   
   //Delete
@@ -33,7 +34,8 @@ module.exports = function(app) {
   // app.delet("/api/upload/:id", deleteController.deleteUpload);
 
   //Get  
-  // app.get("/api/supporters", controller.getAllSupporters);
+  // app.get("/api/users", controller.getAllUsers);
+  app.get("/api/supporters", getController.getAllSupporters);
   app.get("/api/organizations/:regCode", getController.getOrganization);
   app.get("/api/region", getController.getRegionData);
   app.get("/api/province", getController.getProvinceData);

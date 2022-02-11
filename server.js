@@ -122,6 +122,7 @@ async function initial() {
 }
 
 async function initial1() {
+  initial();
   Role1.create({
     id: 1,
     name: "super"
