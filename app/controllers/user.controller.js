@@ -21,12 +21,18 @@ const supporterModel = require('../models/supporter.model');
 
 
 exports.createSupporterDetails = async (req, res) => {
-  delete req.body.id 
-  const { valid, errors } = validateSupporterDetails(req.body);
+  const { data, location } = req.body;
+
+  delete data.id 
+
+  console.log(location)
+  const { valid, errors } = validateSupporterDetails(data);
   if (!valid) return res.status(400).json({ errors, message: { text: 'Something went wrong!', type: 'error'}});
   
 
-  let { firstName, lastName, birthDate, contact, regCode, brgyCode, citymunCode, provCode, middleName  } = toUpperCase(req.body);
+
+  // console.log(location)
+  let { firstName, lastName, birthDate, contact, regCode, brgyCode, citymunCode, provCode, middleName  } = toUpperCase(data);
   let age = countAge(birthDate);
   let bar = await Barangay.findOne({where: {
     brgyCode: brgyCode
@@ -67,7 +73,7 @@ exports.createSupporterDetails = async (req, res) => {
         firstName, lastName, birthDate, contact, middleName, age
       })
       .then(sup => {
-        console.log(mobnum)
+        // console.log(mobnum)
         sup.addMobile(mobnum)
         bar.addBarangaySupport(sup);
         city.addCitymunSupport(sup);

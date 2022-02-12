@@ -101,6 +101,22 @@ const isBD = (data) => {
     };
   };
 
+  exports.validatePsgc = (data) => {
+    let errors = {};
+    
+    if (isEmpty(data.brgyCode)) errors.brgyCode = 'Barangay must not be empty';
+    if (isEmpty(data.regCode)) errors.regCode = 'Region must not be empty';
+    if (isEmpty(data.citymunCode)) errors.citymunCode = 'City/Municipality must not be empty';
+    if (isEmpty(data.provCode)) errors.provCode = 'Province must not be empty';
+    // if (isEmpty(data.birthDate)) errors.birthDate = 'Birth Year must not be empty';
+    // if (isBD(data.birthDate)) errors.birthDate = 'Birth Year not legal';
+
+    return {
+      errors,
+      valid: Object.keys(errors).length === 0 ? true : false
+    };
+  };
+
   exports.validateMapDetails = (data) => {
     let errors = {};
     
