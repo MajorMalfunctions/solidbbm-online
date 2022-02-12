@@ -11,8 +11,6 @@ exports.verifySms = (req, res) => {
     let { code } = req.query;
 
     if(code){
-      
-
 
          axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${config.smsAppId}&app_secret=${config.smsSecret}&code=${code}`)
             .then(ab => {
@@ -24,22 +22,22 @@ exports.verifySms = (req, res) => {
                
                 if(a){
                     Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
-                     return    res.status(200).redirect('https://allinpaking.online')        
+                     return    res.status(200).redirect(`https://allinpaking.online/app/home?verify=${a.token}`)        
                   } else {
                       Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
-                      return   res.status(200).redirect('https://allinpaking.online')   
+                      return   res.status(200).redirect(`https://allinpaking.online/app/home?verify=${a.token}`)   
                   }
             })
             .catch(err => {
                // console.log(err)
                console.log(err)
-               return res.status(400).redirect('https://allinpaking.online')  
+               return res.status(400).redirect('https://allinpaking.online/app/home?verify=error')  
             })
         })
         .catch(err => {
             // console.log(err)
             console.log(err)
-            return res.status(400).redirect('https://allinpaking.online')  
+            return res.status(400).redirect('https://allinpaking.online/app/home?verify=error')  
          })
     
 
@@ -49,15 +47,15 @@ exports.verifySms = (req, res) => {
         .then(a => {
             if(a){
               Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
-              return res.status(200).redirect('https://allinpaking.online') 
+              return res.status(200).redirect(`https://allinpaking.online/app/home?verify=${a.token}`) 
             } else {
                 Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
-               return res.status(200).redirect('https://allinpaking.online')
+               return res.status(200).redirect(`https://allinpaking.online/app/home?verify=${a.token}`)
             }
         })
         .catch(err => {
-            console.log(err)
-            return res.status(400).redirect('https://allinpaking.online')
+            // console.log(err)
+            return res.status(200).redirect(`https://allinpaking.online/app/home?verify=error`)
         })
 }
 
