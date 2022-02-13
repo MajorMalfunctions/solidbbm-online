@@ -21,7 +21,7 @@ let obj = {};
   .then((doc) => {
     obj.total = doc.length;
     obj.verified = doc.filter(a => a.isVerified).length;
-    obj.totalSupData = doc;
+    obj.supportersData = doc;
     obj.totalVerData = doc.filter(a => a.isVerified);
  
     return res.status(200).json(obj);
