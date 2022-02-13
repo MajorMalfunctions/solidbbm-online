@@ -26,8 +26,8 @@ exports.createSupporterDetails = async (req, res) => {
   delete data.id 
 
   console.log(location)
-  const { valid, errors } = validateSupporterDetails(data);
-  if (!valid) return res.status(400).json({ errors, message: { text: 'Something went wrong!', type: 'error'}});
+  // const { valid, errors } = validateSupporterDetails(data);
+  // if (!valid) return res.status(400).json({ errors, message: { text: 'Something went wrong!', type: 'error'}});
   
 
 

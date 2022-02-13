@@ -14,8 +14,8 @@ const Users = db.user;
 
 exports.getAllSupporters =  (req, res) => {
 let obj = {};
-  supporter.findAll({ include: [{
-    model: location,
+  Supporter.findAll({ include: [{
+    model: Location,
     required: false
 }] })
   .then((doc) => {
@@ -30,7 +30,6 @@ let obj = {};
     console.log(">>Error While Fetching Supporters! ", err);
    return res.status(400).send({ error: err, message: 'Error While Fetching Supporters!'});
   });
-
 };
 
 exports.getAllSupportersCount =  (req, res) => {

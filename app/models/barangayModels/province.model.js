@@ -9,9 +9,9 @@ module.exports = (sequelize, Sequelize) => {
     provCode: {
       type: Sequelize.INTEGER.UNSIGNED  
     },
-    // regCode: {
-    //   type: Sequelize.INTEGER.UNSIGNED  
-    // }
+    regCode: {
+      type: Sequelize.INTEGER.UNSIGNED  
+    }
   });
 
   return Province;
