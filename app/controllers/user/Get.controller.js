@@ -8,7 +8,7 @@ const Citymun = db.cityMuns;
 const Provinces = db.provinces;
 const Regions = db.regions;
 const Supporters = db.supporter;
-const location = db.location;
+const Location = db.location;
 const Users = db.user;
 const Posts = db.post;
 const Medias = db.media;
@@ -25,7 +25,7 @@ exports.findAllPosts = (req, res) => {
 
   Posts.findAll({
     where: {isDeleted: false},
-    include: [{ model: Medias, as: 'PostMedia', where: { isDeleted: false } }, { model: Users, attributes: ['id'], include: [{model: Supporters}, {model: Medias, as: 'UserProfile'}] }]
+    include: [{ model: Medias, as: 'PostMedia', where: { isDeleted: false }, required: false }, { model: Users, attributes: ['id'], include: [{model: Supporters, required: false }], required: false }]
      }) 
     .then(doc => {
         let featuredPosts = doc.filter(a => a.postType === 'featured');
@@ -47,7 +47,7 @@ exports.findAllPosts = (req, res) => {
 exports.getSupportersCount =  (req, res) => {
   let obj = {};
     Supporters.findAll({ include: [{
-      model: location,
+      model: Location,
       required: false
   }] })
     .then((doc) => {

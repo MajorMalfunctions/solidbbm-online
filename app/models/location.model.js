@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
       address: {
         type: Sequelize.STRING
       },
-      psgcCode: {
+      brgyCode: {
         type: Sequelize.STRING
       },
       brgyDesc: {

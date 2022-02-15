@@ -8,7 +8,7 @@ const Citymun = db.cityMuns;
 const Provinces = db.provinces;
 const Regions = db.regions;
 const Supporters = db.supporter;
-const location = db.location;
+const Location = db.location;
 const Mobiles = db.mobile;
 const Op = db.Sequelize.Op;
 
@@ -17,7 +17,6 @@ const Op = db.Sequelize.Op;
 const { validateSupporterDetails, validateMapDetails } = require('../utils/validators')
 const { formatted_address } = require('../utils/formatter');
 const { countAge, toUpperCase } = require('../utils/helpers');
-const supporterModel = require('../models/supporter.model');
 
 
 exports.createSupporterDetails = async (req, res) => {
@@ -120,7 +119,7 @@ exports.pinSupporterLocation = async (req, res) => {
       if(results.length !== 0){
         console.log(formatted_address(results[0]))            
         
-          let loc = await location.create({...formatted_address(results[0]), address, zoom  })
+          let loc = await Location.create({...formatted_address(results[0]), address, zoom  })
           // console.log(loc)
           sup.setLocation(loc);
           res.status(200).json(loc);

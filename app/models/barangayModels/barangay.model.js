@@ -7,9 +7,9 @@ module.exports = (sequelize, Sequelize) => {
     brgyCode: {
       type: Sequelize.INTEGER.UNSIGNED
     },
-    // citymunCode: {
-    //   type: Sequelize.INTEGER.UNSIGNED
-    // },
+    citymunCode: {
+      type: Sequelize.INTEGER.UNSIGNED
+    },
     provCode: {
       type: Sequelize.INTEGER
     },
