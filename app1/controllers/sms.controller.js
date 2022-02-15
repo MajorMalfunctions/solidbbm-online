@@ -37,16 +37,16 @@ exports.verifySms = (req, res) => {
                                         { subscriber_number },
                                         { code: doc.code }
                                       ]  }})
-                                      return res.status(200).redirect(`https://allinpaking.online/app/home/${a.mobile}`)       
+                                      return res.status(200).redirect(`https://allinpaking.online/app/home/${a.subscriber_number}`)       
                                   } else {
                                       Mobiles.create({subscriber_number: subscriber_number, code: doc.code, short: doc.short, isVerified: true, access_token: access_token })
                                       .then(mob => {
                                           mob.setApps([doc]);
-                                          return res.status(200).redirect(`https://allinpaking.online/app/home/${mob.mobile}`)      
+                                          return res.status(200).redirect(`https://allinpaking.online/app/home/${mob.subscriber_number}`)      
                                       })
                                       .catch(err => {
                                         // console.log(err)
-                                        return res.status(200).redirect(`https://allinpaking.online/app/home/${mob.mobile}`)  
+                                        return res.status(200).redirect(`https://allinpaking.online/app/home/${mob.subscriber_number}`)  
                                      })
                                   }
                             })
