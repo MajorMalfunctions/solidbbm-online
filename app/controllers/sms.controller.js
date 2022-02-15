@@ -22,22 +22,22 @@ exports.verifySms = (req, res) => {
                
                 if(a){
                     Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
-                     return    res.status(200).redirect(`https://allinpaking.online/app/home?verify=${a.token}`)        
-                  } else {
+                    return res.status(200).redirect(`https://allinpaking.online/app/home/${a.mobile}`) 
+                } else {
                       Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
-                      return   res.status(200).redirect(`https://allinpaking.online/app/home?verify=${a.token}`)   
-                  }
+                      return res.status(200).redirect(`https://allinpaking.online/app/home/${a.mobile}`) 
+                    }
             })
             .catch(err => {
                // console.log(err)
                console.log(err)
-               return res.status(400).redirect('https://allinpaking.online/app/home?verify=error')  
+               return res.status(400).redirect('https://allinpaking.online/app/home/error')  
             })
         })
         .catch(err => {
             // console.log(err)
             console.log(err)
-            return res.status(400).redirect('https://allinpaking.online/app/home?verify=error')  
+            return res.status(400).redirect('https://allinpaking.online/app/home/error')  
          })
     
 
@@ -47,15 +47,15 @@ exports.verifySms = (req, res) => {
         .then(a => {
             if(a){
               Mobiles.update({token: access_token, isVerified: true }, { where: { mobile: subscriber_number }})
-              return res.status(200).redirect(`https://allinpaking.online/app/home?verify=${a.token}`) 
+              return res.status(200).redirect(`https://allinpaking.online/app/home/${a.mobile}`) 
             } else {
                 Mobiles.create({mobile: subscriber_number, isVerified: true, token: access_token });
-               return res.status(200).redirect(`https://allinpaking.online/app/home?verify=${a.token}`)
+               return res.status(200).redirect(`https://allinpaking.online/app/home/${a.mobile}`)
             }
         })
         .catch(err => {
             // console.log(err)
-            return res.status(200).redirect(`https://allinpaking.online/app/home?verify=error`)
+            return res.status(200).redirect(`https://allinpaking.online/app/home/error`)
         })
 }
 
