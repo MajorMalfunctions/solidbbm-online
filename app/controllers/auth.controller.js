@@ -114,7 +114,9 @@ exports.signin = (req, res) => {
 
 exports.getAuthUser = (req, res) => {
     User.findByPk(req.userId, { 
-      include: [{ model: Supporters},{ model: Roles},{model: Medias, as: 'UserProfile'}],
+      include: [{ model: Supporters, required: false},{ model: Roles},
+        // {model: Medias, as: 'UserProfile', require: false}
+      ],
       attributes: {exclude: ['password']},
      })
     .then(user => {
