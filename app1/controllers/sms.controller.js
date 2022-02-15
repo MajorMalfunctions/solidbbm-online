@@ -42,11 +42,11 @@ exports.verifySms = (req, res) => {
                                       Mobiles.create({subscriber_number: subscriber_number, code: doc.code, short: doc.short, isVerified: true, access_token: access_token })
                                       .then(mob => {
                                           mob.setApps([doc]);
-                                          return res.status(200).redirect(`https://allinpaking.online/app/home/${a.mobile}`)      
+                                          return res.status(200).redirect(`https://allinpaking.online/app/home/${mob.mobile}`)      
                                       })
                                       .catch(err => {
                                         // console.log(err)
-                                        return res.status(200).redirect(`https://allinpaking.online/app/home/${a.mobile}`)  
+                                        return res.status(200).redirect(`https://allinpaking.online/app/home/${mob.mobile}`)  
                                      })
                                   }
                             })
