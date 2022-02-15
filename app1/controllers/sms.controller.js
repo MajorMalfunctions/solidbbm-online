@@ -166,7 +166,8 @@ exports.smsData = (req, res) => {
 exports.sendSms = async (req, res) => {
     let mobs = req.body.mobiles;
     let { short } = req.params;
-
+    console.log(req.body)
+    console.log(req.params)
 try {
 
 
@@ -182,6 +183,7 @@ try {
     if(!mobiles || mobiles && mobiles.length == 0 ) return res.status(400).json({message: 'No Mobiles verified'})
     const promises = mobiles.map( async (abc, index) => {
             // let status = { subscriber_number: obj.subscriber_number, isSuccess: null }
+            console.log(mobs)
             let ind = await mobs.indexOf(abc.subscriber_number);
             if(ind !== -1){
                 console.log(sapp.short)
