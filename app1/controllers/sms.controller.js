@@ -111,6 +111,8 @@ exports.verifySms = (req, res) => {
 
 exports.smsData = (req, res) => {
     let { short } = req.params;
+     console.log(req.body)
+     console.log(req.params)
         let {  unsubscribed, inboundSMSMessageList } = req.body;
       if(!short) return  res.status(400).json({message: 'No Short Code!'})
         SmsApp.findOne({where: { short: String(short) }})
