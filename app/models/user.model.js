@@ -12,9 +12,9 @@ module.exports = (sequelize, Sequelize) => {
       password: {
         type: Sequelize.STRING
       },
-      // areaCode: {
-      //   type: Sequelize.INTEGER.UNSIGNED 
-      // },
+      areaCode: {
+        type: Sequelize.INTEGER.UNSIGNED 
+      },
       isVerified: {
           type: Sequelize.BOOLEAN,
           defaultValue: false

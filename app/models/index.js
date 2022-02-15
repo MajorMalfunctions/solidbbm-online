@@ -97,8 +97,8 @@ db.mobile.belongsToMany(db.supporter, {
   otherKey: "supporterId"
 });
 
-db.user.belongsTo(db.media, {as: 'UserProfile', constraints: false})
-// db.media.belongsTo(db.user, {as: 'UserProfile', constraints: false})
+db.user.hasMany(db.media, {as: 'UserProfile', constraints: false})
+db.media.belongsTo(db.user, {as: 'UserProfile', constraints: false})
 
 
 db.user.hasMany(db.post)

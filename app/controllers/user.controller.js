@@ -22,6 +22,7 @@ const { countAge, toUpperCase } = require('../utils/helpers');
 exports.createSupporterDetails = async (req, res) => {
   const { data, location } = req.body;
 
+  data && data.id &&
   delete data.id 
 
   console.log(location)
