@@ -37,29 +37,29 @@ exports.verifySms = (req, res) => {
                                         { subscriber_number },
                                         { code: doc.code }
                                       ]  }})
-                                     return res.status(200).redirect('https://docampaign.online')        
+                                     return res.status(200).redirect(`https://docampaign.online/app/home/${subscriber_number}`)        
                                   } else {
                                       Mobiles.create({subscriber_number: subscriber_number, code: doc.code, short: doc.short, isVerified: true, access_token: access_token })
                                       .then(mob => {
                                           mob.setApps([doc]);
-                                               return res.status(200).redirect('https://docampaign.online')      
+                                               return res.status(200).redirect(`https://docampaign.online/app/home/${subscriber_number}`)      
                                       })
                                       .catch(err => {
                                         // console.log(err)
-                                        return res.status(400).redirect('https://docampaign.online')  
+                                        return res.status(400).redirect('https://docampaign.online/app/home/error')  
                                      })
                                   }
                             })
                             .catch(err => {
                                // console.log(err)
                                console.log(err)
-                               return res.status(400).redirect('https://docampaign.online')  
+                               return res.status(400).redirect('https://docampaign.online/app/home/error')  
                             })
                         })
                         .catch(err => {
                             // console.log(err)
                             console.log(err)
-                            return res.status(400).redirect('https://docampaign.online')  
+                            return res.status(400).redirect('https://docampaign.online/app/home/error')  
                          })
                     
 
@@ -80,22 +80,22 @@ exports.verifySms = (req, res) => {
                                     { code: doc.code }
                                   ]
                               }})
-                              return res.status(200).redirect('https://docampaign.online') 
+                              return res.status(200).redirect(`https://docampaign.online/app/home/${subscriber_number}`) 
                             } else {
                                 Mobiles.create({subscriber_number: subscriber_number, code: doc.code, short: doc.short, isVerified: true, access_token: access_token })
                                       .then(mob => {
                                           mob.setApps([doc]);
-                                               return res.status(200).redirect('https://docampaign.online')      
+                                               return res.status(200).redirect(`https://docampaign.online/app/home/${subscriber_number}`)      
                                       })
                                       .catch(err => {
                                         // console.log(err)
-                                        return res.status(400).redirect('https://docampaign.online')  
+                                        return res.status(400).redirect(`https://docampaign.online/app/home/error`)  
                                      })
                             }
                         })
                         .catch(err => {
                             console.log(err)
-                            return res.status(400).redirect('https://docampaign.online')
+                            return res.status(400).redirect('https://docampaign.online/app/home/error')
                         })
                 }
     })
