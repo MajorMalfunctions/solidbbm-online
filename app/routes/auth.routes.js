@@ -23,6 +23,7 @@ module.exports = function(app) {
   // app.post("/api/auth/signup", controller.signup);
 
     //GET
+  app.post("/api/auth/verify", controller.verifyMobile);
   app.get("/api/auth", [authJwt.verifyToken], controller.getAuthUser);
 
 

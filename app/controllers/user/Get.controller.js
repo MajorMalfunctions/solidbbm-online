@@ -31,7 +31,7 @@ exports.findAllPosts = (req, res) => {
         let featuredPosts = doc.filter(a => a.postType === 'featured');
         let normalPosts = doc.filter(a => a.postType === 'normal');
         let archivePosts = doc.filter(a => a.postType === 'archive');
-      console.log(featuredPosts)
+      // console.log(featuredPosts)
       res.status(200).json({featuredPosts, normalPosts, archivePosts});
     })
     .catch((err) => {

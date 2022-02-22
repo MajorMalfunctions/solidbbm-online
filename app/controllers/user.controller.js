@@ -25,7 +25,6 @@ exports.createSupporterDetails = async (req, res) => {
 
   delete data.id 
 
-  console.log(location)
   // const { valid, errors } = validateSupporterDetails(data);
   // if (!valid) return res.status(400).json({ errors, message: { text: 'Something went wrong!', type: 'error'}});
   
@@ -205,7 +204,7 @@ exports.findCitymunByProvCode = (req, res) => {
 exports.findProvByRegCode = (req, res) => {
   console.log(req.params)
   let { regCode } = req.params
-
+  console.log(regCode)
   Provinces.findAll({where: { regCode }})
     .then((barangays) => {
       res.status(200).json(barangays);

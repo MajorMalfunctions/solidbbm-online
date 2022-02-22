@@ -125,3 +125,11 @@ exports.getAuthUser = (req, res) => {
       res.status(400).json({  message: { text: 'Something went wrong!', type: 'error'}});
     })
 };
+
+
+
+exports.verifyMobile = (req, res) => {
+     console.log(req.body);
+     console.log(req.params)
+     res.status(200).json({message: 'User Verified!'})
+};
