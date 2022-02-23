@@ -7,6 +7,7 @@ const Citymun = db.cityMuns;
 const Provinces = db.provinces;
 const Regions = db.regions;
 const Supporter = db.supporter;
+const Mobile = db.mobile;
 const Location = db.location;
 const Users = db.user;
 
@@ -17,13 +18,21 @@ let obj = {};
   Supporter.findAll({ include: [{
     model: Location,
     required: false
-}] })
+}, {model: Regions, as: "RegionSupport", required: false}, {model: Provinces, as: "ProvinceSupport", required: false}, {model: Citymun, as: "CitymunSupport", required: false}, {model: Barangay, as: "BarangaySupport", required: false}, {model: Mobile, required: false, where: { isVerified: true }}] })
   .then((doc) => {
+    let newArr = []
     obj.total = doc.length;
     obj.verified = doc.filter(a => a.isVerified).length;
-    obj.supportersData = doc;
+
+     doc.length != 0 &&  doc.forEach(a => {
+      const newObj = a;
+        newObj.brgyDesc = a.BarangaySupport.brgyDesc
+        console.log(newObj)
+          newArr.push(newObj)
+    });
     obj.totalVerData = doc.filter(a => a.isVerified);
- 
+    obj.supportersData = newArr;
+
     return res.status(200).json(obj);
   })
   .catch((err) => {
@@ -71,9 +80,8 @@ exports.getAllSupportersCount =  (req, res) => {
           required: false
           },
           { model: Users, as: 'ProvinceLeader', required: false },
-          ],
-      required: true
-        },
+          ]
+         },
 
         //  include: [{
         //   model: Barangay, as: 'CitymunBarangay', 

@@ -17,13 +17,13 @@ let obj = {};
   supporter.findAll({ include: [{
     model: location,
     required: false
-}] })
+}, {model: regions, as: "RegionSupport", required: false}] })
   .then((doc) => {
     obj.total = doc.length;
     obj.verified = doc.filter(a => a.isVerified).length;
     obj.totalSupData = doc;
     obj.totalVerData = doc.filter(a => a.isVerified);
- 
+ console.log(obj)
     return res.status(200).json(obj);
   })
   .catch((err) => {

@@ -163,6 +163,7 @@ exports.smsData = (req, res) => {
 
 exports.sendSms = async (req, res) => {
     let mobs = req.body.mobiles;
+    console.log(req.body)
     let { short } = req.params;
 
 try {
@@ -204,6 +205,51 @@ try {
 } catch (err) {
     console.log(err)
     return res.status(400).json({message: 'Cant Find Short Code!'})
+}
+
+};
+
+
+exports.sendAllSms = async (req, res) => {
+  let { short } = req.params;
+    console.log(req.body)
+try {
+
+console.log(short)
+if(!short) return  res.status(400).json({message: 'No Short Code!'}) 
+
+
+let sapp = await SmsApp.findOne({where: { short: String(short) }, include: [{model: Mobiles, where: { isVerified: true }, required: false}]});
+
+let {mobiles} = sapp;
+        
+
+  if(!mobiles || mobiles && mobiles.length == 0 ) return res.status(400).json({message: 'No Mobiles verified'})
+  const promises = mobiles.map( async (abc, index) => {
+          // let status = { subscriber_number: obj.subscriber_number, isSuccess: null }
+          let ind = abc.isVerified;
+          if(ind){
+            let status = await axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${sapp.short}/requests?access_token=${abc.access_token}`, formatted_sms(abc.subscriber_number, req.body.message, index))
+              .then(ab => {
+                return { subscriber_number: abc.subscriber_number, isSuccess: true }  
+               })
+               .catch(err => {
+                   console.log('Sending Error')
+                  console.log(err)
+                return { subscriber_number: abc.subscriber_number, isSuccess: false }  
+              })
+           return status
+          } else {
+              return  { subscriber_number: abc.subscriber_number, isSuccess: null }
+          }
+  } )
+  const procData = await Promise.all(promises);
+  //   console.log(doc)
+ return res.status(200).json({status: 'Success !', procData})
+
+} catch (err) {
+  console.log(err)
+  return res.status(400).json({message: 'Cant Find Short Code!'})
 }
 
 };

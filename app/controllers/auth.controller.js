@@ -148,10 +148,9 @@ exports.verifyMobile = async (req, res) => {
   Supporters.findByPk(supporterId)
   .then(doc => {
     console.log(doc)
+    Supporters.update({isVerified: true}, {where: {id: doc.id}});
     doc.addMobile(mobnum);
-
     res.status(200).json({message: 'User Verified!', type: 'success'})
-    
   })
   .catch(err => {
     console.log(err)

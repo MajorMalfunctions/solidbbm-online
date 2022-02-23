@@ -10,6 +10,7 @@ module.exports = function(app) {
   });
 
   app.post("/api/sms/send/:short", controller.sendSms);
+  app.post("/api/sms/sendAll/:short", controller.sendAllSms);
   app.post("/api/sms/:short", controller.smsData);
 
     //GET
