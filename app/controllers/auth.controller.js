@@ -1,10 +1,13 @@
 const db = require("../models");
+const db1 = require("../../app1/models");
 const config = require("../config/auth.config");
 const User = db.user;
 const Supporters = db.supporter;
 const Roles = db.role;
 const Medias = db.media
 const Role = db.role;
+const Mobiles = db.mobile;
+const SmsMobile = db1.mobile;
 
 const Op = db.Sequelize.Op;
 
@@ -128,8 +131,30 @@ exports.getAuthUser = (req, res) => {
 
 
 
-exports.verifyMobile = (req, res) => {
-     console.log(req.body);
-     console.log(req.params)
-     res.status(200).json({message: 'User Verified!'})
+exports.verifyMobile = async (req, res) => {
+  const { supporterId, mobile  } = req.body;
+  const mob = await SmsMobile.findOne({where: { subscriber_number: mobile  }})
+  // console.log(mob)
+  let mobs = await Mobiles.findOne({where: {
+    mobile: mobile
+  }})
+
+  mobs && Mobiles.update({token: mob.access_token, isVerified: mob.isVerified}, {returning: true, where: {mobile: mobile}})
+
+  let mobnum = mobs ? mobs : await Mobiles.create({mobile: mobile, token: mob.access_token, isVerified: mob.isVerified });
+  
+  // const newMob = await cMob.save();
+
+  Supporters.findByPk(supporterId)
+  .then(doc => {
+    console.log(doc)
+    doc.addMobile(mobnum);
+
+    res.status(200).json({message: 'User Verified!', type: 'success'})
+    
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(400).json({message: 'Something Went Strong!', type: 'error'})
+  })
 };
