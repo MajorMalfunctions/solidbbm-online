@@ -23,6 +23,8 @@ module.exports = function(app) {
 
 
   //Get
+  app.get("/api/options", getController.getOptions);
+
 
   app.get(
     "/api/allPosts",

@@ -4,10 +4,14 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING
       },
       value: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       type: {
         type: Sequelize.STRING
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       }
     });
     return Options;

@@ -31,7 +31,7 @@ const Op = db.Sequelize.Op;
 const Role = db.role;
 const User = db.user;
 const Region = db.regions;
-
+const Option = db.options;
 
 //database2
 const db1 = require("./app1/models");
@@ -64,54 +64,29 @@ db1.sequelize.sync(
 });
 
 
+const { user, roles, options, smsApi } = require('./data').defData;
+
 async function initial() {
-  Role.create({
-    id: 1,
-    name: "super"
-  });
-  Role.create({
-    id: 2,
-    name: "admin"
-  });
-  Role.create({
-    id: 3,
-    name: "user"
-  });
-  Role.create({
-    id: 4,
-    name: "region"
-  });
-  Role.create({
-    id: 5,
-    name: "province"
-  });
-  Role.create({
-    id: 6,
-    name: "citymun"
-  });
-  Role.create({
-    id: 7,
-    name: "barangay"
-  });
+  
+  options.map(a => {
+    Option.create(a)
+  })
 
 
-  User.create({
-    "username": "jaybee420",
-    "firstName": "jaybee",
-    "lastName": "Pido",
-    "middleName": "Bermoy",
-    "mobile": "12312312",
-    "password": bcrypt.hashSync("123123", 8),
-    "isVerified": true
-  }).then(user => {
+  roles.map(a => {
+    Role.create(a);
+  })
+
+ 
+  User.create(user).then(usr => {
       Role.findAll({
         where: {
           name: {
             [Op.or]: ["super"]
           }
         }
-      }).then(roles => {
-        user.setRoles(roles).then(() => {
+      }).then(rls => {
+        usr.setRoles(rls).then(() => {
           console.log({ message: "User was registered successfully!" });
         });
       });
@@ -123,49 +98,22 @@ async function initial() {
 
 async function initial1() {
   // initial();
-  Role1.create({
-    id: 1,
-    name: "super"
-  });
-
-  SmsApp.create({
-    id: 1,
-    appkey: "kA8aH5keEgCMLTKkRbieqkCGeAroH5KL",
-    appsecret: "9bfe8c50e830427ba3ccc9292320fe95a29cf96f3ce54b18eb56b3fcfb2a6a87",
-    short: "6583",
-    code: "21586583",
-  });
-
-  SmsApp.create({
-    id: 2,
-    appkey: "b7jeCej97jF5bTbb6Ei9yAFzM7AaCrE8",
-    appsecret: "0bf8b15ba57bc326790ccc04c438bb51903564bbf9ce8e02fea6a466733601ce",
-    short: "9022",
-    code: "21589022",
-  });
+ 
+  Role1.create(roles[0]);
+  smsApi.forEach(a => {
+    SmsApp.create(a)
+  })
 
 
-
-
-
-
-  User1.create({
-    "username": "jaybee420",
-    "firstName": "jaybee",
-    "lastName": "Pido",
-    "middleName": "Bermoy",
-    "mobile": "12312312",
-    "password": bcrypt.hashSync("123123", 8),
-    "isVerified": true
-  }).then(user => {
+  User1.create(user).then(usr => {
       Role1.findAll({
         where: {
           name: {
             [Op.or]: ["super"]
           }
         }
-      }).then(roles => {
-        user.setRoles(roles).then(() => {
+      }).then(rls => {
+        usr.setRoles(rls).then(() => {
           console.log({ message: "User was registered successfully!" });
         });
       });

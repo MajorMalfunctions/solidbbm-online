@@ -12,6 +12,8 @@ const location = db.location;
 const Users = db.user;
 const Posts = db.post;
 const Medias = db.media;
+const Options = db.options;
+
 
 const Op = db.Sequelize.Op;
 
@@ -21,20 +23,39 @@ const { validateSupporterDetails, validateMapDetails } = require('../../utils/va
 const { formatted_address } = require('../../utils/formatter');
 const { countAge, toUpperCase } = require('../../utils/helpers');
 
+
+
+exports.getOptions = (req, res) => {
+  console.log('Get Options')
+    Options.findAll({})
+    .then(doc => {
+     return res.status(200).json(doc)
+    })
+    .catch(err => {
+      console.log(err)
+      return res.status(400).json({message: 'Something Went Wrong!'})
+    })
+
+}
+
+
+
 exports.findAllPosts = (req, res) => {
 
   Posts.findAll({
     where: {isDeleted: false},
-    include: [{ model: Medias, as: 'PostMedia', where: { isDeleted: false } }, { model: Users, attributes: ['id'], include: [{model: Supporters}, {model: Medias, as: 'UserProfile'}] }]
+    include: [{ model: Medias, as: 'PostMedia', where: { isDeleted: false }, required: false }, { model: Users, attributes: ['id'], include: [{model: Supporters, required: false}, {model: Medias, as: 'UserProfile', required: false}], required: false }]
      }) 
     .then(doc => {
-        let featuredPosts = doc.filter(a => a.postType === 'featured');
-        let normalPosts = doc.filter(a => a.postType === 'normal');
-        let archivePosts = doc.filter(a => a.postType === 'archive');
+      console.log(doc)
+        // let featuredPosts = doc.filter(a => a.postType === 'featured');
+        let normalPosts = doc.filter(a => a.postType === 'public');
+        // let archivePosts = doc.filter(a => a.postType === 'archive');
       // console.log(featuredPosts)
-      res.status(200).json({featuredPosts, normalPosts, archivePosts});
+      res.status(200).json(normalPosts);
     })
     .catch((err) => {
+      console.log(err)
       console.log(">> Error while finding tutorial: ", err);
       res.status(400).send(err);
     });

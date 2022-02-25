@@ -8,6 +8,8 @@ exports.myMap = (data) => {
     }
 }
 
+
+
 exports.formatted_address = (data) => {
     let {  formatted_address, geometry } = data
     return {
@@ -26,5 +28,28 @@ exports.formatted_sms = (address, supporter, message) => {
         outboundSMSTextMessage: {message},
         address: address
       }
+    }
+}
+
+exports.dataForm = {
+    supporter: (val) => {
+        let barangay = val.BarangaySupport.brgyDesc;
+        let region = val.RegionSupport.regDesc;
+        let province = val.ProvinceSupport.provDesc;
+        let city = val.CitymunSupport.citymunDesc;
+        let mobile = val.mobiles.length != 0 ? val.mobiles[0].mobile : "";
+        let smsToken = val.mobiles.length != 0 ? val.mobiles[0].token : ""
+        let smsVerified = val.mobiles.length != 0 ? val.mobiles[0].isVerified : false;
+
+        return {
+            id: val.id,
+            fullName: `${val.lastName}, ${val.firstName}${val.middleName ? ' '+val.middleName : ''}`,
+            age: val.age,
+            isVerified: val.isVerified,
+            region, province, city, barangay,
+            mobile,
+            smsToken,
+            smsVerified
+        }
     }
 }

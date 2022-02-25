@@ -38,7 +38,7 @@ db.supporter = require("./supporter.model.js")(sequelize, Sequelize);
 db.post = require("./post.model.js")(sequelize, Sequelize);
 db.media = require("./media.model.js")(sequelize, Sequelize);
 db.mobile = require("./mobile.model.js")(sequelize, Sequelize);
-
+db.options = require("./options.model.js")(sequelize, Sequelize);
 
 
 // db.comments = require("./comment.model.js")(sequelize, Sequelize);

@@ -10,6 +10,43 @@ const Supporter = db.supporter;
 const Mobile = db.mobile;
 const Location = db.location;
 const Users = db.user;
+const Posts = db.post;
+const Medias = db.media;
+
+const { dataForm } = require('../../utils/formatter')
+
+
+
+
+
+exports.findUserPosts = (req, res) => {
+  console.log(req.user)
+    Posts.findAll({
+      where: {isDeleted: false},
+      include: [{ model: Medias, as: 'PostMedia', where: { isDeleted: false }, required: false }, { model: Users, attributes: ['id'], include: [{model: Supporter, required: false}, {model: Medias, as: 'UserProfile', required: false}], required: false }]
+       }) 
+      .then(doc => {
+        // console.log(doc)
+          // let featuredPosts = doc.filter(a => a.postType === 'featured');
+          let normalPosts = doc.filter(a => a.postType === 'public');
+          // let archivePosts = doc.filter(a => a.postType === 'archive');
+        // console.log(featuredPosts)
+        res.status(200).json(normalPosts);
+      })
+      .catch((err) => {
+        console.log(err)
+        console.log(">> Error while finding tutorial: ", err);
+        res.status(400).send(err);
+      });
+  };
+
+
+
+
+
+
+
+
 
 
 
@@ -18,17 +55,14 @@ let obj = {};
   Supporter.findAll({ include: [{
     model: Location,
     required: false
-}, {model: Regions, as: "RegionSupport", required: false}, {model: Provinces, as: "ProvinceSupport", required: false}, {model: Citymun, as: "CitymunSupport", required: false}, {model: Barangay, as: "BarangaySupport", required: false}, {model: Mobile, required: false, where: { isVerified: true }}] })
+}, {model: Regions, as: "RegionSupport", required: false}, {model: Provinces, as: "ProvinceSupport", required: false}, {model: Citymun, as: "CitymunSupport", required: false}, {model: Barangay, as: "BarangaySupport", required: false}, {model: Mobile, required: false}] })
   .then((doc) => {
     let newArr = []
     obj.total = doc.length;
     obj.verified = doc.filter(a => a.isVerified).length;
 
      doc.length != 0 &&  doc.forEach(a => {
-      const newObj = a;
-        newObj.brgyDesc = a.BarangaySupport.brgyDesc
-        console.log(newObj)
-          newArr.push(newObj)
+          newArr.push(dataForm.supporter(a))
     });
     obj.totalVerData = doc.filter(a => a.isVerified);
     obj.supportersData = newArr;

@@ -22,6 +22,7 @@ module.exports = function(app) {
 
 
   //Update
+  
   app.put("/api/post/:id", updateController.updatePost);
   // app.put("/api/post/:id", updateController.updatePost);
   // app.put("/api/post/:id", updateController.updatePost);
@@ -35,7 +36,16 @@ module.exports = function(app) {
 
   //Get  
   // app.get("/api/users", controller.getAllUsers);
+  app.get(
+    "/api/userPosts",
+    [authJwt.verifyToken],
+    getController.findUserPosts
+  );
   app.get("/api/supporters", getController.getAllSupporters);
+  // app.get("/api/supportersMobile,")
+
+
+
   app.get("/api/organizations/:regCode", getController.getOrganization);
   app.get("/api/region", getController.getRegionData);
   app.get("/api/province", getController.getProvinceData);

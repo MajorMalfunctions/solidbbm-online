@@ -9,13 +9,13 @@ module.exports = function(app) {
     next();
   });
 
-  app.post("/api/sms/send/:short", controller.sendSms);
-  app.post("/api/sms/sendAll/:short", controller.sendAllSms);
-  app.post("/api/sms/:short", controller.smsData);
+  app.post("/api/sms/send", controller.sendSms);
+  app.post("/api/sms/sendAll", controller.sendAllSms);
+  app.post("/api/sms", controller.smsData);
 
     //GET
   // app.get("/api/sms", controller.verifySms);
   app.get("/api/sms/mobiles", controller.getAllMobile)
-  app.get("/api/sms/test/:short", controller.testEndpoint);
-  app.get("/api/sms/:short", controller.verifySms);
+  app.get("/api/sms/test", controller.testEndpoint);
+  app.get("/api/sms", controller.verifySms);
 };

@@ -13,10 +13,8 @@ const { validateSignupData } = require('../utils/validators')
 
 exports.signup = (req, res) => {
   // Save User to Database
-  console.log(req.body)
   
   const { valid, errors } = validateSignupData(req.body);
-  console.log(errors)
   if (!valid) return res.status(400).json(errors);
   let { email, password, username, areaCode, supporterId, roles } = req.body;
 

@@ -12,7 +12,9 @@ const { formatted_sms } = require('../utils/formatter');
 
 exports.verifySms = (req, res) => {
     let { code } = req.query;
-    let { short } = req.params;
+    let short = config.smsCode;
+
+    // let { short } = req.params;
     if(!short) return res.status(400).json({message: 'Missing Short Code!'})
     SmsApp.findOne({where: { short: String(short) }})
     .then(doc => {
@@ -110,11 +112,14 @@ exports.verifySms = (req, res) => {
 
 
 exports.smsData = (req, res) => {
-    let { short } = req.params;
+  let short = config.smsCode;
+    // let { short } = req.params;
         let {  unsubscribed, inboundSMSMessageList } = req.body;
       if(!short) return  res.status(400).json({message: 'No Short Code!'})
         SmsApp.findOne({where: { short: String(short) }})
         .then(doc => {
+          console.log(short)
+          console.log(doc)
             if(unsubscribed){
                 let {  access_token, subscriber_number } = unsubscribed;
 
@@ -164,7 +169,10 @@ exports.smsData = (req, res) => {
 exports.sendSms = async (req, res) => {
     let mobs = req.body.mobiles;
     console.log(req.body)
-    let { short } = req.params;
+
+
+    let short = config.smsCode;   
+     // let { short } = req.params;
 
 try {
 
@@ -181,8 +189,9 @@ try {
     if(!mobiles || mobiles && mobiles.length == 0 ) return res.status(400).json({message: 'No Mobiles verified'})
     const promises = mobiles.map( async (abc, index) => {
             // let status = { subscriber_number: obj.subscriber_number, isSuccess: null }
-            let ind = await mobs.indexOf(abc.subscriber_number);
-            if(ind !== -1){
+            let ind = await mobs.find(a => a.mobile === abc.subscriber_number && abc.isVerified);
+            console.log(ind)
+            if(ind){
                 console.log(sapp.short)
               let status = await axios.post(`https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/${sapp.short}/requests?access_token=${abc.access_token}`, formatted_sms(abc.subscriber_number, req.body.message, index))
                 .then(ab => {
@@ -211,7 +220,8 @@ try {
 
 
 exports.sendAllSms = async (req, res) => {
-  let { short } = req.params;
+  // let { short } = req.params;
+  let short = config.smsCode;
     console.log(req.body)
 try {
 

@@ -10,11 +10,18 @@ const supporter = db.supporter;
 const location = db.location;
 const Users = db.user;
 const Posts = db.post;
+const Options = db.options;
 const Medias = db.media;
 
 
 exports.postOption = (req, res) => {
-  res.status(200).send("User Content.");
+  Options.create(req.body)
+  .then(doc => {
+    res.status(200).json({message: "Saved Successfully!"});
+  })
+  .catch(err => {
+    res.status(400).json({message: 'Something Went Wrong!'})
+  })
 };
 
 exports.newPost = async (req, res) => {
@@ -26,20 +33,11 @@ await Posts.create({...req.body, userId})
 .then(doc => {
   console.log(doc)
   doc.setPostMedia(postMedia);
-
   res.status(200).json({message: { text: 'Successfuly Save Post!', type: 'success'}});
 })
 .catch(err => {
   res.status(400).send({ error: err, message: { text: 'Error While Saving Post!', type: 'error'}});
 })
-
-
-  
-
-
-
-
-
 
 
 
