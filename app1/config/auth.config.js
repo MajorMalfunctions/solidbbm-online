@@ -1,8 +1,8 @@
 module.exports = {
   secret: "wildcrack-key",
   map_key: "AIzaSyC6Rn0gmpAVNCe5fEqlE2oXrd7WAcnpz8k",
-  smsShort: "6648",
-  smsCode: "21666648",
+  smsCode: "6648",
+  smsShort: "21666648",
   smsAppId: "rjdAH98xGEu67caXAzTxxzu8ojj4HM87",
   smsSecret: "f734004881274b61e2773b9651d62e0e302797a6e63f9e90cfbbfe2a410f0044",
   apiDynamics: [

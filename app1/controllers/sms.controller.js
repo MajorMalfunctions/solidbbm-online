@@ -19,6 +19,7 @@ exports.verifySms = (req, res) => {
     SmsApp.findOne({where: { short: String(short) }})
     .then(doc => {
         console.log(short)
+        console.log(doc)
                    if(code){
                     console.log('WEB OPT VERIFY')
                          axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${doc.appkey}&app_secret=${doc.appsecret}&code=${code}`)
