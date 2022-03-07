@@ -49,6 +49,7 @@ app.use(express.static(path.join(__dirname+'/client/', 'build')));
 // }).catch(err => {
 //   console.log(err)
 // });
+
 db.sequelize.sync(
   // {force: true}
   ).then(() => { 
@@ -77,7 +78,6 @@ async function initial() {
     Role.create(a);
   })
 
- 
   User.create(user).then(usr => {
       Role.findAll({
         where: {
@@ -88,8 +88,14 @@ async function initial() {
       }).then(rls => {
         usr.setRoles(rls).then(() => {
           console.log({ message: "User was registered successfully!" });
+        })
+        .catch(err => {
+          console.log(err)
         });
-      });
+      })
+      .catch(err => {
+        console.log(err)
+      })
   })
   .catch(err => {
     console.log({ message: err.message });

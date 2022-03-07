@@ -22,6 +22,10 @@ module.exports = (sequelize, Sequelize) => {
           type: Sequelize.BOOLEAN,
           defaultValue: false
       },
+      isIdentified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       isDeleted: {
         type: Sequelize.BOOLEAN,
         defaultValue: false

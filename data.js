@@ -46,7 +46,7 @@ exports.defData = {
       {
       id: 1,
       title: "About Us",
-      value: "Solid BBM ALL-IN supporters platform, this platform is mainly used in delivering relevant informations and activities, as well as managing supporters and leaders from different Regions, Provinces, City or Municipalities and Baranggies throughout the Philippines.",
+      value: "Solid Romualdez supporters platform, this platform is mainly used in delivering relevant informations and activities, as well as managing supporters and leaders from different Baranggies throughout Tacloban City.",
       type: "about"
     },
     {

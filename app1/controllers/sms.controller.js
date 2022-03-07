@@ -18,10 +18,8 @@ exports.verifySms = (req, res) => {
     if(!short) return res.status(400).json({message: 'Missing Short Code!'})
     SmsApp.findOne({where: { short: String(short) }})
     .then(doc => {
-        console.log(short)
-        console.log(doc)
+     
                    if(code){
-                    console.log('WEB OPT VERIFY')
                          axios.post(`https://developer.globelabs.com.ph/oauth/access_token?app_id=${doc.appkey}&app_secret=${doc.appsecret}&code=${code}`)
                             .then(ab => {
                             // let access_token = 'awda'
@@ -108,9 +106,6 @@ exports.verifySms = (req, res) => {
     })
 
 };
-
-
-
 
 exports.smsData = (req, res) => {
   let short = config.smsCode;
@@ -218,8 +213,7 @@ try {
 }
 
 };
-
-
+ 
 exports.sendAllSms = async (req, res) => {
   // let { short } = req.params;
   let short = config.smsCode;
