@@ -53,7 +53,7 @@ app.use(express.static(path.join(__dirname+'/client/', 'build')));
 db.sequelize.sync(
   // {force: true}
   ).then(() => { 
-  // initial();
+//   initial();
 });
 
 
@@ -61,7 +61,7 @@ db.sequelize.sync(
 db1.sequelize.sync(
   // {force: true}
   ).then(() => { 
-  // initial1();
+//   initial1();
 });
 
 
